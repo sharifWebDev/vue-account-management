@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities; 
+
+#app {
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  font-weight: normal;
+}
+
+/* Custom styles */
+.sidebar {
+    transition: all 0.3s ease;
+}
+ 
+.dashboard-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.notification-dropdown {
+    width: 380px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+@media (max-width: 640px) {
+    .notification-dropdown {
+        width: 300px;
+        right: -50px;
+    }
+}
+
+.nav-item.active {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    font-weight: 500;
+}
+
+.dark .nav-item.active {
+    background-color: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+}
+
+.sidebar-shadow {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.dark .sidebar-shadow {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Notification type colors */
+.notification-success {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.dark .notification-success {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: #34d399;
+}
+
+.notification-warning {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.dark .notification-warning {
+    background-color: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+}
+
+.notification-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.dark .notification-error {
+    background-color: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+}
+
+.notification-info {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.dark .notification-info {
+    background-color: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+}
+
+/* Custom scrollbar */
+.notification-dropdown::-webkit-scrollbar {
+    width: 6px;
+}
+
+.notification-dropdown::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.dark .notification-dropdown::-webkit-scrollbar-track {
+    background: #374151;
+}
+
+.notification-dropdown::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.dark .notification-dropdown::-webkit-scrollbar-thumb {
+    background: #6b7280;
+}
+
+.loader {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #ccc;
+  border-top-color: #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+} 

@@ -1,0 +1,58 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class UpdateBankRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true; // Authorization logic if needed
+    }
+
+    public function rules()
+    {
+        return [
+            'bank_name' => ['sometimes', 'string', 'max:255'],
+            'address' => ['sometimes', 'string', 'max:65535'],
+            'phone' => ['sometimes', 'string', 'max:255', 'regex:/^[\+]?[0-9\s\-\(\)]{10,}$/'],
+            'mobile' => ['sometimes', 'string', 'max:255', 'regex:/^[\+]?[0-9\s\-\(\)]{10,}$/'],
+            'fax' => ['sometimes', 'string', 'max:255'],
+            'email' => ['sometimes', 'string', 'max:255', 'email', 'lowercase'],
+            'website' => ['sometimes', 'string', 'max:255', 'url', 'active_url'],
+            'created' => ['sometimes', 'date'],
+            'modified' => ['nullable', 'date'],
+            'status' => ['sometimes', 'boolean', 'max:1'],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'bank_name.string' => 'The bank name must be a string.',
+            'bank_name.max' => 'The bank name must not exceed 255 characters.',
+            'address.string' => 'The address must be a string.',
+            'address.max' => 'The address must not exceed 65535 characters.',
+            'phone.string' => 'The phone must be a string.',
+            'phone.max' => 'The phone must not exceed 255 characters.',
+            'phone.regex' => 'The phone must be a valid phone number.',
+            'mobile.string' => 'The mobile must be a string.',
+            'mobile.max' => 'The mobile must not exceed 255 characters.',
+            'fax.string' => 'The fax must be a string.',
+            'fax.max' => 'The fax must not exceed 255 characters.',
+            'email.email' => 'The email must be a valid email address.',
+            'email.unique' => 'The email has already been taken.',
+            'email.lowercase' => 'The email must be in lowercase.',
+            'website.string' => 'The website must be a string.',
+            'website.max' => 'The website must not exceed 255 characters.',
+            'created.date' => 'The created must be a valid date and time.',
+            'modified.date' => 'The modified must be a valid date and time.',
+            'status.boolean' => 'The status must be true or false.',
+            'status.max' => 'The status must not exceed 1 characters.',
+        ];
+    }
+}
