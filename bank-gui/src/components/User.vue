@@ -49,8 +49,7 @@
 
             <!-- Empty State -->
             <TableLoadingState v-if="userStore.items.length === 0" :is-loading="false" :isEmpty="true"
-              :has-search="!!searchQuery" :item-name="'users'" empty-icon="fas fa-users"
-              empty-title="No users found"
+              :has-search="!!searchQuery" :item-name="'users'" empty-icon="fas fa-users" empty-title="No users found"
               :empty-message="searchQuery ? 'No users match your search criteria.' : 'Get started by creating your first user.'"
               :create-button-text="'Add First User'" @create="openCreateModal" @clear-search="clearSearch" />
 
@@ -59,24 +58,27 @@
               <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                 {{ calculateRowNumber(index) }}
               </td>
-              <td class="px-6 py-3">
-                <div class="flex-shrink-0 h-10 w-10">
-                  <img v-if="data.image" :src="data.image" :alt="data.first_name"
-                    class="h-10 w-10 rounded-lg object-cover border border-gray-200 dark:border-gray-700">
-                  <div v-else
-                    class="h-10 w-10 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-                    <i class="fas fa-user text-gray-400"></i>
+              <td class="px-6 py-3 whitespace-nowrap">
+                <div class="flex items-center gap-3">
+                  <div class="flex-shrink-0 h-10 w-10">
+                    <img v-if="data.image" :src="data.image" :alt="data.first_name"
+                      class="h-10 w-10 rounded-lg object-cover border border-gray-200 dark:border-gray-700">
+                    <div v-else
+                      class="h-10 w-10 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                      <i class="fas fa-user text-gray-400"></i>
+                    </div>
+                  </div>
+                  <div class="flex flex-col">
+                    <div class="text-sm font-medium text-gray-900 dark:text-white">
+                      {{ data.first_name }} {{ data.last_name }}
+                    </div>
+                    <div v-if="data.company_names" class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      {{ data.company_names }}
+                    </div>
                   </div>
                 </div>
               </td>
-              <td class="px-6 py-3 whitespace-nowrap">
-                <div class="text-sm font-medium text-gray-900 dark:text-white">
-                  {{ data.first_name }} {{ data.last_name }}
-                </div>
-                <div v-if="data.company_names" class="text-xs text-gray-500 dark:text-gray-400">
-                  {{ data.company_names }}
-                </div>
-              </td>
+
               <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
                 {{ data.email }}
               </td>
@@ -142,9 +144,9 @@
     </div>
 
     <div v-if="userStore.pagination.total > 0" class="mt-6">
-      <Pagination v-if="userStore.totalItems > 0" :total-items="userStore.totalItems"
-        :per-page="userStore.perPage" :current-page="userStore.currentPage" :last-page="userStore.lastPage"
-        :is-loading="userStore.isLoading" @change-page="handlePageChange" @change-per-page="handlePerPageChange" />
+      <Pagination v-if="userStore.totalItems > 0" :total-items="userStore.totalItems" :per-page="userStore.perPage"
+        :current-page="userStore.currentPage" :last-page="userStore.lastPage" :is-loading="userStore.isLoading"
+        @change-page="handlePageChange" @change-per-page="handlePerPageChange" />
     </div>
   </div>
 
@@ -299,13 +301,12 @@
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
           <div class="flex items-center space-x-6">
             <label class="inline-flex items-center cursor-pointer">
-              <input v-model="formData.status" type="radio" :value="true" @change="clearValidationError('status')"
+              <input v-model="formData.status" type="radio" :value="1" @change="clearValidationError('status')"
                 class="h-4 w-4 text-gray-600 focus:ring-green-600 border-green-300 dark:border-green-600 dark:bg-green-700">
               <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Active</span>
             </label>
             <label class="inline-flex items-center cursor-pointer">
-              <input v-model="formData.status" type="radio" :value="false"
-                @change="clearValidationError('status')"
+              <input v-model="formData.status" type="radio" :value="0" @change="clearValidationError('status')"
                 class="h-4 w-4 text-red-600 focus:ring-red-600 border-red-300 dark:border-red-600 dark:bg-red-700">
               <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Inactive</span>
             </label>
@@ -512,14 +513,8 @@ import SortableTableHeader from '@/components/common/SortableTableHeader.vue';
 
 const tableColumns = ref([
   {
-    key: 'profile',
-    label: 'Profile',
-    sortable: false,
-    width: '80px'
-  },
-  {
     key: 'name',
-    label: 'Name',
+    label: 'User',
     sortable: true,
     width: '200px'
   },
@@ -579,7 +574,7 @@ const formData = ref({
   password_confirmation: '',
   user_type: '',
   company_ids: [],
-  status: true,
+  status: 1,
   image: null
 });
 
@@ -676,7 +671,7 @@ const editUser = (user) => {
     password_confirmation: '',
     user_type: user.user_type,
     company_ids: user.company_ids ? (Array.isArray(user.company_ids) ? user.company_ids : JSON.parse(user.company_ids)) : [],
-    status: Boolean(user.status),
+    status: user.status ? 1 : 0,
     image: null
   };
   previewImage.value = user.image || null;
@@ -723,7 +718,7 @@ const resetForm = () => {
     password_confirmation: '',
     user_type: '',
     company_ids: [],
-    status: true,
+    status: 1,
     image: null
   };
   currentUser.value = null;

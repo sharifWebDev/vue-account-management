@@ -16,7 +16,7 @@ class BranchService implements BranchServiceInterface
 
     public function getOld(Request $request): LengthAwarePaginator
     {
-        $length = $request->input('length', 10);
+        $length = $request->input('length') ?? $request->input('per_page', 10);
         $search = $request->input('search');
         $status = $request->input('status');
 
@@ -31,7 +31,13 @@ class BranchService implements BranchServiceInterface
             4 => 'status',
         ];
 
-        $sortColumn = $columns[$sortColumnIndex] ?? 'id';
+        if (! in_array($sortBy, $columns)) {
+            $sortBy = 'id';
+        }
+
+        if (! in_array(strtolower($sortOrder), ['asc', 'desc'])) {
+            $sortOrder = 'desc';
+        }
 
         $query = $this->model->query();
 

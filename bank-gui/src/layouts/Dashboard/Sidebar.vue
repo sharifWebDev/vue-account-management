@@ -159,13 +159,12 @@ const navigationItems = ref([
     route: '/dashboard',
     exact: true
   },
-  // {
-  //   id: 'hk-prod-size-types',
-  //   text: 'Size Types',
-  //   icon: 'fas fa-layer-group',
-  //   route: '/dashboard/hk-prod-size-types',
-  //   exact: true
-  // },
+  {
+    id: 'history',
+    text: 'Transactions',
+    icon: 'fa-solid fa-money-bill-transfer',
+    route: '/transactions-history'
+  },
   {
     id: 'account',
     text: 'Account',
@@ -179,7 +178,7 @@ const navigationItems = ref([
   {
     id: 'company',
     text: 'Company',
-    icon: 'fas fa-building',
+    icon: 'fa-regular fa-building',
     route: '/company',
     subItems: [
       { name: 'Manager Company', path: '/company', icon: 'fas fa-cog' },
@@ -189,7 +188,7 @@ const navigationItems = ref([
   {
     id: 'bank',
     text: 'Bank',
-    icon: 'fas fa-building',
+    icon: 'fa-solid fa-building-columns',
     route: '/bank',
     subItems: [
       { name: 'Manager Bank', path: '/bank', icon: 'fas fa-cog' },
@@ -199,7 +198,7 @@ const navigationItems = ref([
   {
     id: 'branch',
     text: 'Branch',
-    icon: 'fas fa-building',
+    icon: 'fa-solid fa-code-branch',
     route: '/branch',
     subItems: [
       { name: 'Manager Branch', path: '/branch', icon: 'fas fa-cog' },
@@ -215,12 +214,6 @@ const navigationItems = ref([
       { name: 'Manager User', path: '/user', icon: 'fas fa-cog' },
       { name: 'Trash User', path: '/user/trash', icon: 'fas fa-trash' }
     ]
-  },
-  {
-    id: 'history',
-    text: 'History',
-    icon: 'fas fa-history',
-    route: '/transactions-history'
   }
 ]);
 

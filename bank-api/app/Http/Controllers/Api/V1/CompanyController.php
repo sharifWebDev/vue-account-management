@@ -42,8 +42,17 @@ class CompanyController extends Controller
     public function store(StoreCompanyRequest $request): JsonResponse
     {
         try {
+            $data = $request->validated();
 
-            $company = $this->companyService->store($request->validated());
+            if ($request->hasFile('logo')) {
+                $data['logo'] = saveImage(
+                    $request->file('logo'),
+                    'company/logos',
+                    $request->company_name
+                );
+            }
+
+            $this->companyService->store($data);
 
             return success('Records saved successfully.');
         } catch (Exception $e) {
@@ -66,7 +75,7 @@ class CompanyController extends Controller
         } catch (\Exception $e) {
             info('Companies data showing failed!', [$e]);
 
-            return error('Companies retrieved failed!.'.$e->getMessage());
+            return error('Companies retrieved failed!.' . $e->getMessage());
         }
     }
 
@@ -77,13 +86,23 @@ class CompanyController extends Controller
     {
         try {
 
-            $company = $this->companyService->update($companyId->id, $request->validated());
+            $data = $request->validated();
+
+            if ($request->hasFile('logo')) {
+                $data['logo'] = saveImage(
+                    $request->file('logo'),
+                    'company/logos',
+                    $request->company_name
+                );
+            }
+
+            $this->companyService->update($companyId->id, $data);
 
             return success('Records updated successfully.');
         } catch (\Exception $e) {
             info('Companies update failed!', [$e]);
 
-            return error('Companies update failed!.'.$e->getMessage());
+            return error('Companies update failed!.' . $e->getMessage());
         }
     }
 
@@ -132,7 +151,7 @@ class CompanyController extends Controller
         } catch (\Exception $e) {
             info('Company trash list retrieval failed!', [$e]);
 
-            return error('Company trash list retrieval failed! '.$e->getMessage());
+            return error('Company trash list retrieval failed! ' . $e->getMessage());
         }
     }
 

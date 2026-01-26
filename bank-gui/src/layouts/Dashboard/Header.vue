@@ -141,10 +141,17 @@
         <div class="relative">
           <button @click="toggleUserDropdown"
             class="flex items-center space-x-2 rounded-lg border border-gray-50  dark:border-gray-800 dark:bg-gray-800 mr-4">
-            <div class="w-11 h-11 bg-gray-100 dark:bg-gray-900 rounded-full flex items-center justify-center">
-              <span class="text-gray-600 dark:text-gray-400 text-xs font-medium">{{ props.user.initials || 'JD'
-              }}</span>
+            <div
+              class="w-11 h-11 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-900 flex items-center justify-center border border-gray-200 dark:border-gray-700">
+              <!-- Avatar Image -->
+              <img v-if="props.user.avatar" :src="props.user.avatar" alt="User Avatar"
+                class="w-full h-full object-cover" />
+              <!-- Fallback: Initials -->
+              <span v-else class="text-gray-600 dark:text-gray-400 text-xs font-medium">
+                {{ props.user.initials || 'JD' }}
+              </span>
             </div>
+
             <span class="text-gray-800 font-semibold dark:text-gray-300 hidden md:block text-sm">{{ props.user.name ||
               'User'
             }}</span>

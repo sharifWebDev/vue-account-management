@@ -61,10 +61,10 @@ export const createBaseStore = (storeName, apiEndpoint, defaultConfig = {}) => {
      */
     const get = async (params = {}) => {
       try {
-      // if (loading.value) {
-      //   console.log("Already loading, skipping duplicate call");
-      //   return { success: false, data: items.value };
-      // }
+        // if (loading.value) {
+        //   console.log("Already loading, skipping duplicate call");
+        //   return { success: false, data: items.value };
+        // }
         loading.value = true;
         clearMessages();
 
@@ -240,7 +240,12 @@ export const createBaseStore = (storeName, apiEndpoint, defaultConfig = {}) => {
 
         const endpoint = `${apiEndpoint}/update/${id}`;
 
-        const response = await axiosClient.post(endpoint, payload);
+        const response = await axiosClient.post(endpoint, payload, {
+          headers:
+            data instanceof FormData
+              ? { "Content-Type": "multipart/form-data" }
+              : { "Content-Type": "application/json" },
+        });
 
         const updatedItem = response.data.data || response.data;
 
@@ -307,136 +312,145 @@ export const createBaseStore = (storeName, apiEndpoint, defaultConfig = {}) => {
         return null;
       }
     };
-/**
- * Get all trashed/soft-deleted items with pagination
- * @param {Object} params - Additional parameters for the request
- * @returns {Promise<Object>} - Response object with success status and data
- */
-const trashed = async (params = {}) => {
-  try {
-    loading.value = true;
-    clearMessages();
+    /**
+     * Get all trashed/soft-deleted items with pagination
+     * @param {Object} params - Additional parameters for the request
+     * @returns {Promise<Object>} - Response object with success status and data
+     */
+    const trashed = async (params = {}) => {
+      try {
+        loading.value = true;
+        clearMessages();
 
-    // Prepare request parameters
-    const finalParams = {
-      page: Number(pagination.value.current_page) || 1,
-      per_page: Number(pagination.value.per_page) || 10,
-      ...filters.value,
-      ...params,
-    };
-
-    // Handle search parameter properly
-    // Check if searchQuery is a string, not a function
-    let searchValue = '';
-    if (typeof searchQuery === 'function') {
-      // If searchQuery is a computed/ref, get its value
-      searchValue = searchQuery.value || '';
-    } else if (typeof searchQuery === 'string') {
-      searchValue = searchQuery;
-    } else if (searchQuery && typeof searchQuery.value === 'string') {
-      searchValue = searchQuery.value;
-    }
-    
-    // Only add search if it's a non-empty string
-    if (typeof finalParams.search === 'string' && finalParams.search.trim() !== '') {
-      finalParams.search = searchValue;
-    }
-
-    // Add sorting if specified
-    if (sortBy.value) {
-      finalParams.sort_by = sortBy.value;
-      finalParams.sort_direction = sortDirection.value;
-    }
-
-    console.log('Request params:', finalParams); // Debug log
-
-    // Make API request
-    const response = await axiosClient.get(`${apiEndpoint}/trash-list`, {
-      params: finalParams,
-    });
-
-    const apiResponse = response.data;
-
-    // Check if API request was successful
-    if (!apiResponse.success) {
-      throw new Error(apiResponse.message || "Failed to fetch trashed items");
-    }
-
-    // Extract data safely - handle different API response structures
-    let itemsData = [];
-    let paginationMeta = null;
-
-    if (apiResponse.data) {
-      // Case 1: Laravel-style pagination { data: [...], meta: {...}, links: {...} }
-      if (apiResponse.data.data && Array.isArray(apiResponse.data.data)) {
-        itemsData = apiResponse.data.data;
-        paginationMeta = apiResponse.data.meta || null;
-      }
-      // Case 2: Simple array response
-      else if (Array.isArray(apiResponse.data)) {
-        itemsData = apiResponse.data;
-        // Create simple pagination metadata for array responses
-        paginationMeta = {
-          current_page: 1,
-          last_page: 1,
-          per_page: itemsData.length,
-          total: itemsData.length,
-          from: 1,
-          to: itemsData.length,
+        // Prepare request parameters
+        const finalParams = {
+          page: Number(pagination.value.current_page) || 1,
+          per_page: Number(pagination.value.per_page) || 10,
+          ...filters.value,
+          ...params,
         };
+
+        // Handle search parameter properly
+        // Check if searchQuery is a string, not a function
+        let searchValue = "";
+        if (typeof searchQuery === "function") {
+          // If searchQuery is a computed/ref, get its value
+          searchValue = searchQuery.value || "";
+        } else if (typeof searchQuery === "string") {
+          searchValue = searchQuery;
+        } else if (searchQuery && typeof searchQuery.value === "string") {
+          searchValue = searchQuery.value;
+        }
+
+        // Only add search if it's a non-empty string
+        if (
+          typeof finalParams.search === "string" &&
+          finalParams.search.trim() !== ""
+        ) {
+          finalParams.search = searchValue;
+        }
+
+        // Add sorting if specified
+        if (sortBy.value) {
+          finalParams.sort_by = sortBy.value;
+          finalParams.sort_direction = sortDirection.value;
+        }
+
+        console.log("Request params:", finalParams); // Debug log
+
+        // Make API request
+        const response = await axiosClient.get(`${apiEndpoint}/trash-list`, {
+          params: finalParams,
+        });
+
+        const apiResponse = response.data;
+
+        // Check if API request was successful
+        if (!apiResponse.success) {
+          throw new Error(
+            apiResponse.message || "Failed to fetch trashed items"
+          );
+        }
+
+        // Extract data safely - handle different API response structures
+        let itemsData = [];
+        let paginationMeta = null;
+
+        if (apiResponse.data) {
+          // Case 1: Laravel-style pagination { data: [...], meta: {...}, links: {...} }
+          if (apiResponse.data.data && Array.isArray(apiResponse.data.data)) {
+            itemsData = apiResponse.data.data;
+            paginationMeta = apiResponse.data.meta || null;
+          }
+          // Case 2: Simple array response
+          else if (Array.isArray(apiResponse.data)) {
+            itemsData = apiResponse.data;
+            // Create simple pagination metadata for array responses
+            paginationMeta = {
+              current_page: 1,
+              last_page: 1,
+              per_page: itemsData.length,
+              total: itemsData.length,
+              from: 1,
+              to: itemsData.length,
+            };
+          }
+          // Case 3: Object with items property
+          else if (
+            apiResponse.data.items &&
+            Array.isArray(apiResponse.data.items)
+          ) {
+            itemsData = apiResponse.data.items;
+            paginationMeta =
+              apiResponse.data.meta || apiResponse.data.pagination || null;
+          }
+        }
+
+        // Update reactive items array
+        items.value = itemsData;
+
+        // Update pagination if metadata exists
+        if (paginationMeta) {
+          Object.assign(pagination.value, {
+            current_page: Number(paginationMeta.current_page) || 1,
+            last_page: Number(paginationMeta.last_page) || 1,
+            per_page: Number(paginationMeta.per_page) || finalParams.per_page,
+            total: Number(paginationMeta.total) || itemsData.length,
+            from: Number(paginationMeta.from) || 0,
+            to: Number(paginationMeta.to) || 0,
+          });
+        } else {
+          // Default pagination for non-paginated responses
+          Object.assign(pagination.value, {
+            current_page: 1,
+            last_page: 1,
+            per_page: itemsData.length,
+            total: itemsData.length,
+            from: itemsData.length > 0 ? 1 : 0,
+            to: itemsData.length,
+          });
+        }
+
+        return {
+          success: true,
+          data: items.value,
+          meta: paginationMeta,
+          pagination: pagination.value,
+        };
+      } catch (err) {
+        console.error("Error in trashed method:", err);
+        handleError(err);
+        errorMessage.value = err.message || "Failed to load trashed items";
+        return {
+          success: false,
+          error: err.message,
+          data: [],
+          meta: null,
+        };
+      } finally {
+        loading.value = false;
       }
-      // Case 3: Object with items property
-      else if (apiResponse.data.items && Array.isArray(apiResponse.data.items)) {
-        itemsData = apiResponse.data.items;
-        paginationMeta = apiResponse.data.meta || apiResponse.data.pagination || null;
-      }
-    }
-
-    // Update reactive items array
-    items.value = itemsData;
-
-    // Update pagination if metadata exists
-    if (paginationMeta) {
-      Object.assign(pagination.value, {
-        current_page: Number(paginationMeta.current_page) || 1,
-        last_page: Number(paginationMeta.last_page) || 1,
-        per_page: Number(paginationMeta.per_page) || finalParams.per_page,
-        total: Number(paginationMeta.total) || itemsData.length,
-        from: Number(paginationMeta.from) || 0,
-        to: Number(paginationMeta.to) || 0,
-      });
-    } else {
-      // Default pagination for non-paginated responses
-      Object.assign(pagination.value, {
-        current_page: 1,
-        last_page: 1,
-        per_page: itemsData.length,
-        total: itemsData.length,
-        from: itemsData.length > 0 ? 1 : 0,
-        to: itemsData.length,
-      });
-    }
-
-    return {
-      success: true,
-      data: items.value,
-      meta: paginationMeta,
-      pagination: pagination.value,
     };
-  } catch (err) {
-    console.error('Error in trashed method:', err);
-    handleError(err);
-    errorMessage.value = err.message || "Failed to load trashed items";
-    return { 
-      success: false, 
-      error: err.message,
-      data: [],
-      meta: null 
-    };
-  } finally {
-    loading.value = false;
-  }
-};
     /**
      * Restore soft-deleted item by ID
      */
@@ -447,7 +461,7 @@ const trashed = async (params = {}) => {
 
         const response = await axiosClient.post(`${apiEndpoint}/restore/${id}`);
         const restoredItem = response.data.data || response.data;
- 
+
         toast.success(response.data.message || "Item restored successfully");
         return { success: true, data: restoredItem };
       } catch (err) {

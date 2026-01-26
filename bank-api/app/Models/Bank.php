@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Branch;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Bank extends Model
 {
@@ -36,5 +37,9 @@ class Bank extends Model
     public function accounts()
     {
         return $this->hasMany(Account::class, 'bank_id');
+    }
+    public function branches()
+    {
+        return $this->hasMany(Branch::class, 'bank_id');
     }
 }

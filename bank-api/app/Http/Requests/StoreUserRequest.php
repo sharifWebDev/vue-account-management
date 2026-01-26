@@ -47,7 +47,7 @@ class StoreUserRequest extends FormRequest
             'instagram' => ['nullable', 'string', 'max:255'],
             'google_plus' => ['nullable', 'string', 'max:255'],
             'linkedin' => ['nullable', 'string', 'max:255'],
-            'company_ids' => ['required', 'string', 'max:255'],
+            'company_ids' => ['sometimes', 'string', 'max:255'],
             'user_type' => ['required', 'string', 'max:255'],
             'created' => ['nullable', 'date'],
             'modified' => ['nullable', 'date'],

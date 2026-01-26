@@ -60,8 +60,7 @@ const routes = [
       {
         path: "",
         name: "Dashboard",
-        component: () =>
-          import("@/pages/admin/dashboard/Dashboard.vue"),
+        component: () => import("@/pages/admin/dashboard/Dashboard.vue"),
         meta: { title: "Dashboard" },
       },
       ...AccountRoutes,
@@ -70,7 +69,7 @@ const routes = [
       ...CompanyRoutes,
       ...UserRoutes,
       ...TransactionRoutes,
-      ...SizeTypeRoutes 
+      ...SizeTypeRoutes,
     ],
   },
 
@@ -97,15 +96,15 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
 
-  document.title = `${to.meta.title || "App"} | Banking Pro`;
+  document.title = `${to.meta.title || "App"} | Mesh Ledger Banking`;
 
   const isAuth = authStore.isAuthenticated;
 
-  if (to.matched.some(r => r.meta.requiresAuth) && !isAuth) {
+  if (to.matched.some((r) => r.meta.requiresAuth) && !isAuth) {
     return next("/login");
   }
 
-  if (to.matched.some(r => r.meta.guestOnly) && isAuth) {
+  if (to.matched.some((r) => r.meta.guestOnly) && isAuth) {
     return next("/dashboard");
   }
 

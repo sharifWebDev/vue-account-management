@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Fortify\TwoFactorAuthenticatable;
+use App\Models\Transaction;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Fortify\TwoFactorAuthenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
@@ -31,7 +32,7 @@ class User extends Authenticatable
         'instagram',
         'google_plus',
         'linkedin',
-        'company_id',
+        'company_ids',
         'user_type',
         'created',
         'modified',
@@ -64,8 +65,24 @@ class User extends Authenticatable
         'status' => 'boolean',
     ];
 
+    public function getUserNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
     public function company()
     {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(Company::class, 'company_ids', 'id');
+    }
+
+    // User.php
+    public function companies()
+    {
+        return $this->belongsToMany(Company::class, 'company_user', 'user_id', 'company_id');
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'user_id');
     }
 }

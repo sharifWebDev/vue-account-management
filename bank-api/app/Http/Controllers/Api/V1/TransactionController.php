@@ -16,7 +16,6 @@ class TransactionController extends Controller
 {
     public function __construct(
         protected TransactionService $transactionService,
-
     ) {}
 
     /**
@@ -25,14 +24,10 @@ class TransactionController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-
             $transactions = $this->transactionService->get($request);
-
             return success('Records retrieved successfully', TransactionResource::collection($transactions));
         } catch (Exception $e) {
-            info('Error retrieved Transactions!', [$e]);
-
-            return error('Transactions retrieved failed!.');
+            return error('Transactions retrieved failed: ' . $e->getMessage());
         }
     }
 
@@ -42,14 +37,10 @@ class TransactionController extends Controller
     public function store(StoreTransactionRequest $request): JsonResponse
     {
         try {
-
             $transaction = $this->transactionService->store($request->validated());
-
-            return success('Records saved successfully.');
+            return success('Transaction saved successfully.', new TransactionResource($transaction));
         } catch (Exception $e) {
-            info('Transactions data insert failed!', [$e]);
-
-            return error('Transactions insert failed!.');
+            return error('Transaction insert failed: ' . $e->getMessage());
         }
     }
 
@@ -59,14 +50,10 @@ class TransactionController extends Controller
     public function find(TransactionIdRequest $transactionId): JsonResponse
     {
         try {
-
             $transaction = $this->transactionService->find($transactionId->id);
-
-            return success('Records retrieved successfully', new TransactionResource($transaction));
+            return success('Record retrieved successfully', new TransactionResource($transaction));
         } catch (\Exception $e) {
-            info('Transactions data showing failed!', [$e]);
-
-            return error('Transactions retrieved failed!.'.$e->getMessage());
+            return error('Transaction not found: ' . $e->getMessage());
         }
     }
 
@@ -76,14 +63,10 @@ class TransactionController extends Controller
     public function update(UpdateTransactionRequest $request, TransactionIdRequest $transactionId): JsonResponse
     {
         try {
-
             $transaction = $this->transactionService->update($transactionId->id, $request->validated());
-
-            return success('Records updated successfully.');
+            return success('Transaction updated successfully.', new TransactionResource($transaction));
         } catch (\Exception $e) {
-            info('Transactions update failed!', [$e]);
-
-            return error('Transactions update failed!.'.$e->getMessage());
+            return error('Transaction update failed: ' . $e->getMessage());
         }
     }
 
@@ -93,72 +76,150 @@ class TransactionController extends Controller
     public function destroy(TransactionIdRequest $transactionId): JsonResponse
     {
         try {
-
-            $transaction = $this->transactionService->delete($transactionId->id);
-
-            return success('Records deleted successfully');
+            $this->transactionService->delete($transactionId->id);
+            return success('Transaction deleted successfully');
         } catch (\Exception $e) {
-            info('Transactions delete failed!', [$e]);
-
-            return error('Transactions delete failed!.');
+            return error('Transaction delete failed: ' . $e->getMessage());
         }
     }
 
     /**
-     * Get all Teams for form dropdowns.
+     * Soft delete transaction.
+     */
+    public function softDelete(TransactionIdRequest $transactionId): JsonResponse
+    {
+        try {
+            $this->transactionService->softDelete($transactionId->id);
+            return success('Transaction moved to trash successfully');
+        } catch (\Exception $e) {
+            return error('Transaction soft delete failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Undo soft delete transaction.
+     */
+    public function undoSoftDelete(TransactionIdRequest $transactionId): JsonResponse
+    {
+        try {
+            $this->transactionService->undoSoftDelete($transactionId->id);
+            return success('Transaction restored from trash successfully');
+        } catch (\Exception $e) {
+            return error('Transaction restore failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Force delete transaction.
+     */
+    public function forceDelete($id): JsonResponse
+    {
+        try {
+            $this->transactionService->forceDelete($id);
+            return success('Transaction permanently deleted successfully');
+        } catch (\Exception $e) {
+            return error('Transaction force delete failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Restore transaction from trash.
+     */
+    public function restore(TransactionIdRequest $transactionId): JsonResponse
+    {
+        try {
+            $this->transactionService->restore($transactionId->id);
+            return success('Transaction restored successfully');
+        } catch (\Exception $e) {
+            return error('Transaction restore failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Change transaction status.
+     */
+    public function changeStatus(TransactionIdRequest $transactionId): JsonResponse
+    {
+        try {
+            $request = request();
+            $status = $request->input('status', 'active');
+
+            $this->transactionService->changeStatus($transactionId->id, $status);
+
+            $message = $status === 'active'
+                ? 'Transaction activated successfully'
+                : 'Transaction deactivated successfully';
+
+            return success($message);
+        } catch (\Exception $e) {
+            return error('Status change failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Get trashed transactions.
+     */
+    public function trash(Request $request): JsonResponse
+    {
+        try {
+            $transactions = $this->transactionService->trash($request);
+            return success('Trashed transactions retrieved successfully', TransactionResource::collection($transactions));
+        } catch (\Exception $e) {
+            return error('Trash list retrieval failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Get transaction history with filters.
+     */
+    public function history(Request $request): JsonResponse
+    {
+        try {
+            $transactions = $this->transactionService->getTransactionHistory($request);
+
+            // Calculate running balance
+            $balance = 0;
+            $transactions->getCollection()->transform(function ($transaction) use (&$balance) {
+                $deposit = $transaction->deposit ? (float) $transaction->deposit : 0;
+                $withdraw = $transaction->withdraw ? (float) $transaction->withdraw : 0;
+                $balance += ($deposit - $withdraw);
+                $transaction->balance = $balance;
+                return $transaction;
+            });
+
+            return success('Transaction history retrieved successfully', TransactionResource::collection($transactions));
+        } catch (\Exception $e) {
+            return error('History retrieval failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Get account balance.
+     */
+    public function getBalance(Request $request): JsonResponse
+    {
+        try {
+            $request->validate([
+                'account_number' => 'required|string'
+            ]);
+
+            $balance = $this->transactionService->getBalance($request->account_number);
+            return success('Balance retrieved successfully', ['balance' => $balance]);
+        } catch (\Exception $e) {
+            return error('Balance retrieval failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Get all transactions for dropdowns.
      */
     public function getAll(): JsonResponse
     {
         try {
             $transactions = $this->transactionService->getAll();
-
-            return success('Records rectrived successfully', TransactionResource::collection($transactions));
+            return success('Records retrieved successfully', TransactionResource::collection($transactions));
         } catch (\Exception $e) {
-            info('Transactions rectrived failed!', [$e]);
-
-            return error('Transactions rectrived failed!.');
-        }
-    }
-
-    public function trash(Request $request): JsonResponse
-    {
-        try {
-            $transaction = $this->transactionService->trash($request);
-
-            return success(
-                'Records retrieved successfully',
-                TransactionResource::collection($transaction)
-            );
-        } catch (\Exception $e) {
-            info('Transactions trash list retrieval failed!', [$e]);
-
-            return error('Transactions trash list retrieval failed! '.$e->getMessage());
-        }
-    }
-
-    public function restore(TransactionIdRequest $transactionId): JsonResponse
-    {
-        try {
-            $transaction = $this->transactionService->restore($transactionId->id);
-
-            return success('Records restored successfully');
-        } catch (\Exception $e) {
-            info('Transactions restored failed!', [$e]);
-
-            return error('Transactions restored failed!.');
-        }
-    }
-
-    public function forceDelete($id): JsonResponse
-    {
-        try {
-            $transaction = $this->transactionService->forceDelete($id);
-
-            return success('Records deleted successfully');
-        } catch (\Exception $e) {
-            info('Transactions deleted failed!', [$e]);
-
-            return error('Transactions deleted failed!.');
+            return error('Transactions retrieval failed: ' . $e->getMessage());
         }
     }
 }

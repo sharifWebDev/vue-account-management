@@ -16,11 +16,24 @@ class TransactionResource extends BaseResource
         return [
             'id' => (int) $this->id,
             'user_id' => $this->user_id,
-            'user_id_details' => null,
-            'user_name' => $this->user?->name ?? $this->user?->title ?? $this->user?->code ?? null,
+            'user_name' => $this->user?->user_name . ' (' . $this->user?->email . ', ' . $this->user?->mobile . ')',
             'account_id' => $this->account_id,
-            'account_id_details' => $this->Account,
-            'account_name' => $this->account?->account_name ?? $this->account?->title ?? $this->account?->code ?? null,
+            'account' =>
+            [
+                'id' => $this->account_id,
+                'account_name' => $this->account?->account_name ?? $this->account?->title ?? $this->account?->code ?? null,
+                'company_id' => $this->account?->company_id,
+                'bank_id' => $this->account?->bank_id,
+                'bank_name' => $this->account?->bank?->bank_name ?? $this->account?->bank?->address ?? $this->account?->bank?->phone ?? null,
+                'branch_id' => $this->account?->branch_id,
+                'branch_name' => $this->account?->branch?->branch_name ?? $this->account?->branch?->address ?? $this->account?->branch?->phone ?? null,
+                'status' => $this->account?->status,
+                'account_number' => $this->account?->account_number,
+                'cheque_book' => $this->account?->cheque_book,
+                'type' => $this->account?->type,
+                'opening_balance' => $this->account?->opening_balance,
+                'closing_balance' => $this->account?->closing_balance,
+            ],
             'bounce_transaction_id' => $this->bounce_transaction_id,
             'bounce_transaction_id_details' => $this->Transaction,
             'bounce_transaction_name' => $this->Transaction?->name ?? $this->Transaction?->title ?? $this->Transaction?->code ?? null,
@@ -37,13 +50,9 @@ class TransactionResource extends BaseResource
             'created' => $this->created?->format('Y-m-d H:i:s'),
             'modified' => $this->modified?->format('Y-m-d H:i:s'),
             'status' => (bool) $this->status,
-            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
-            'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s'),
+            'deleted_at' => $this->deleted_at?->format('M d, Y h:i A'),
             'created_at_formatted' => $this->created_at?->format('M d, Y h:i A'),
             'updated_at_formatted' => $this->updated_at?->format('M d, Y h:i A'),
-            'created_at_human' => $this->created_at?->diffForHumans(),
-            'updated_at_human' => $this->updated_at?->diffForHumans(),
         ];
     }
 }

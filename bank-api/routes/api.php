@@ -1,14 +1,15 @@
 <?php
 
-use App\Http\Controllers\Api\V1\AccountController;
-use App\Http\Controllers\Api\V1\AuthController;
-use App\Http\Controllers\Api\V1\BankController;
-use App\Http\Controllers\Api\V1\BranchController;
-use App\Http\Controllers\Api\V1\CompanyController;
-use App\Http\Controllers\Api\V1\TransactionController;
-use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\BankController;
+use App\Http\Controllers\Api\V1\UserController;
+use App\Http\Controllers\Api\V1\BranchController;
+use App\Http\Controllers\Api\V1\AccountController;
+use App\Http\Controllers\Api\V1\CompanyController;
+use App\Http\Controllers\Api\V1\DashboardController;
+use App\Http\Controllers\Api\V1\TransactionController;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 
 Route::middleware('auth:sanctum')->get('/v1/user', function (Request $request) {
@@ -29,6 +30,14 @@ Route::middleware('auth:sanctum', 'verified')
     ->group(function () {
         Route::get('/me', [AuthController::class, 'me']);
         Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
+
+        Route::controller(DashboardController::class)
+            ->prefix('dashboard')
+            ->group(function () {
+                Route::get('/', 'dashboard');
+                Route::get('/export', 'exportDashboardData');
+                Route::get('/chart-data', 'getChartData');
+            });
 
         Route::controller(AccountController::class)
             ->prefix('accounts')
@@ -112,6 +121,18 @@ Route::middleware('auth:sanctum', 'verified')
                 Route::get('/trash-list', 'trash');
                 Route::post('/restore/{id}', 'restore');
                 Route::delete('/force-delete/{id}', 'forceDelete');
+
+                // New routes added for the full system
+                Route::post('/soft-delete/{id}', 'softDelete');           // Soft delete (move to trash)
+                Route::post('/undo-soft-delete/{id}', 'undoSoftDelete');  // Undo soft delete (restore from trash)
+                Route::post('/change-status/{id}', 'changeStatus');       // Change transaction status (active/inactive)
+                Route::get('/history', 'history');                        // Get transaction history with filters
+                Route::get('/balance', 'getBalance');                     // Get account balance
+
+                // Special transaction types
+                Route::post('/deposit', 'deposit');                       // Make a deposit
+                Route::post('/withdraw', 'withdraw');                     // Make a withdrawal
+                Route::post('/bounce/{id}', 'markAsBounced');             // Mark transaction as bounced
             });
 
         Route::controller(UserController::class)

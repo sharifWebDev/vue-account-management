@@ -16,14 +16,12 @@ class CompanyService implements CompanyServiceInterface
 
     public function get(Request $request): LengthAwarePaginator
     {
-        $length = $request->input('length', 10);
+        $length = $request->input('length') ?? $request->input('per_page', 10);
         $search = $request->input('search');
         $status = $request->input('status');
 
         $sortBy = $request->input('sort_by', 'id');
         $sortOrder = $request->input('sort_direction', 'desc');
-
-        $sortColumnIndex = array_search($sortBy, (new Company)->getFillable());
 
         $columns = [
             0 => 'id',
@@ -39,7 +37,13 @@ class CompanyService implements CompanyServiceInterface
             10 => 'status',
         ];
 
-        $sortColumn = $columns[$sortColumnIndex] ?? 'id';
+        if (! in_array($sortBy, $columns)) {
+            $sortBy = 'id';
+        }
+
+        if (! in_array(strtolower($sortOrder), ['asc', 'desc'])) {
+            $sortOrder = 'desc';
+        }
 
         $query = $this->model->query();
 

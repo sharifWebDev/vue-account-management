@@ -30,16 +30,16 @@
       <main
         class="content p-4 md:px-5 lg:px-7 overflow-y-auto no-scrollbar flex-1 min-h-[calc(100vh-9rem)] max-h-[100vh-9rem]">
         <!-- <transition name="fade" mode="out-in"> -->
-          <!-- <keep-alive> -->
-          <Suspense>
-            <template #default>
-              <router-view />
-            </template>
-            <template #fallback>
-              <PreLoader />
-            </template>
-          </Suspense>
-          <!-- </keep-alive> -->
+        <!-- <keep-alive> -->
+        <Suspense>
+          <template #default>
+            <router-view />
+          </template>
+          <template #fallback>
+            <PreLoader />
+          </template>
+        </Suspense>
+        <!-- </keep-alive> -->
         <!-- </transition> -->
       </main>
 
@@ -133,7 +133,8 @@ const getUserData = () => ({
   initials: userInitials.value,
   name: userName.value,
   email: userEmail.value,
-  role: userRole.value
+  role: userRole.value,
+  avatar: user.value?.image || null,
 });
 </script>
 

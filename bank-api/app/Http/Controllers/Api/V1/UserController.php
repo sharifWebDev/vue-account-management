@@ -43,7 +43,17 @@ class UserController extends Controller
     {
         try {
 
-            $user = $this->userService->store($request->validated());
+            $data = $request->validated();
+
+            if ($request->hasFile('image')) {
+                $data['image'] = saveImage(
+                    $request->file('image'),
+                    'users/images',
+                    $request->company_name
+                );
+            }
+
+            $this->userService->store($data);
 
             return success('Records saved successfully.');
         } catch (Exception $e) {
@@ -66,7 +76,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             info('Users data showing failed!', [$e]);
 
-            return error('Users retrieved failed!.'.$e->getMessage());
+            return error('Users retrieved failed!.' . $e->getMessage());
         }
     }
 
@@ -77,13 +87,23 @@ class UserController extends Controller
     {
         try {
 
-            $user = $this->userService->update($userId->id, $request->validated());
+            $data = $request->validated();
+
+            if ($request->hasFile('image')) {
+                $data['image'] = saveImage(
+                    $request->file('image'),
+                    'users/images',
+                    $request->company_name
+                );
+            }
+
+            $this->userService->update($userId->id, $data);
 
             return success('Records updated successfully.');
         } catch (\Exception $e) {
             info('Users update failed!', [$e]);
 
-            return error('Users update failed!.'.$e->getMessage());
+            return error('Users update failed!.' . $e->getMessage());
         }
     }
 
@@ -132,7 +152,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             info('Accounts trash list retrieval failed!', [$e]);
 
-            return error('Accounts trash list retrieval failed! '.$e->getMessage());
+            return error('Accounts trash list retrieval failed! ' . $e->getMessage());
         }
     }
 

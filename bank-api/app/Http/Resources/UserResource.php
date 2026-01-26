@@ -18,7 +18,7 @@ class UserResource extends BaseResource
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'address' => $this->address,
-            'name' => $this->first_name.' '.$this->last_name,
+            'name' => $this->first_name . ' ' . $this->last_name,
             'phone' => $this->phone,
             'mobile' => $this->mobile,
             'email' => $this->email,
@@ -33,6 +33,9 @@ class UserResource extends BaseResource
             'google_plus' => $this->google_plus,
             'linkedin' => $this->linkedin,
             'company_ids' => $this->company_ids,
+            'company_names' => $this->company_ids
+                ? \App\Models\Company::whereIn('id', json_decode($this->company_ids))->pluck('company_name')->implode(', ')
+                : null,
             'user_type' => $this->user_type,
             'created' => $this->created?->format('Y-m-d H:i:s'),
             'modified' => $this->modified?->format('Y-m-d H:i:s'),

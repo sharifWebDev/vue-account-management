@@ -17,23 +17,24 @@ class StoreTransactionRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => ['required', 'integer', 'max:11', 'exists:users,id'],
-            'account_id' => ['required', 'integer', 'max:11', 'exists:accounts,id'],
-            'bounce_transaction_id' => ['nullable', 'integer', 'max:11', 'exists:transactions,id'],
-            'date' => ['required', 'date'],
+            'user_id' => ['nullable', 'integer',  'exists:users,id'],
+            'account_id' => ['nullable', 'integer', 'exists:accounts,id'],
+            'bounce_transaction_id' => ['nullable', 'integer', 'exists:transactions,id'],
+            'date' => ['nullable', 'date'],
             'type' => ['required', 'string', 'max:255'],
-            'details' => ['required', 'string', 'max:65535'],
-            'deposit' => ['required', 'numeric', 'regex:/^\d+(\.\d{1,2})?$/'],
-            'withdraw' => ['required', 'numeric', 'regex:/^\d+(\.\d{1,2})?$/'],
-            'receive_from' => ['required', 'string', 'max:255'],
-            'payment_to' => ['required', 'string', 'max:255'],
-            'attachment' => ['required', 'file', 'mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,txt,csv,zip,rar,7z', 'max:20480'],
-            'bounce_details' => ['required', 'string', 'max:255'],
-            'created' => ['required', 'date'],
+            'details' => ['nullable', 'string', 'max:65535'],
+            'deposit' => ['nullable', 'numeric', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'withdraw' => ['nullable', 'numeric', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'receive_from' => ['nullable', 'string', 'max:255'],
+            'payment_to' => ['nullable', 'string', 'max:255'],
+            'attachment' => ['nullable', 'file', 'mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,txt,csv,zip,rar,7z', 'max:20480'],
+            'bounce_details' => ['nullable', 'string', 'max:255'],
+            'created' => ['nullable', 'date'],
             'modified' => ['nullable', 'date'],
-            'status' => ['required', 'boolean', 'max:1'],
+            'status' => ['nullable'],
         ];
     }
+
 
     public function messages()
     {
@@ -83,5 +84,21 @@ class StoreTransactionRequest extends FormRequest
             'status.boolean' => 'The status must be true or false.',
             'status.max' => 'The status must not exceed 1 characters.',
         ];
+    }
+
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'user_id' => auth()->id(),           // shorthand for auth()->user()->id
+            'created_by' => auth()->id(),        // shorthand for auth()->user()->id
+            'date' => now(),
+            'deposit' => $this->deposit ?? 0,
+            'withdraw' => $this->withdraw ?? 0,
+            'receive_from' => $this->receive_from ?? '', // default empty string if not provided
+            'payment_to' => $this->payment_to ?? '',
+            'attachment' => $this->attachment ?? null,  // null if not uploaded
+            'bounce_details' => $this->input('details') ?? '', // fixed
+            'created' => now(),
+        ]);
     }
 }

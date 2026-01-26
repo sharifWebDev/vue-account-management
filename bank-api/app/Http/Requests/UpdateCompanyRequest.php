@@ -23,7 +23,7 @@ class UpdateCompanyRequest extends FormRequest
             'mobile' => ['sometimes', 'string', 'max:255', 'regex:/^[\+]?[0-9\s\-\(\)]{10,}$/'],
             'email' => ['sometimes', 'string', 'max:255', 'email', 'lowercase'],
             'website' => ['sometimes', 'string', 'max:255', 'url', 'active_url'],
-            'logo' => ['sometimes', 'file', 'image', 'mimes:jpeg,png,jpg,gif,svg,webp,bmp,ico', 'max:10240'],
+            'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg,webp,bmp,ico', 'max:10240'],
             'created' => ['sometimes', 'date'],
             'modified' => ['nullable', 'date'],
             'status' => ['sometimes', 'boolean', 'max:1'],

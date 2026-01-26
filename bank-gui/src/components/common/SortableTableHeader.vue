@@ -2,18 +2,14 @@
   <thead class="bg-gray-50 dark:bg-gray-800">
     <tr>
       <!-- SL Column -->
-      <th 
-        v-if="showSlColumn"
-        scope="col"
+      <th v-if="showSlColumn" scope="col"
         class="px-6 py-3 wtext-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-        @click="handleSort('id')"
-        :class="{ 'bg-gray-100 dark:bg-gray-700': currentSortColumn === 'id' }"
-      >
+        @click="handleSort('id')" :class="{ 'bg-gray-100 dark:bg-gray-700': currentSortColumn === 'id' }">
         <div class="flex items-center">
           <span>S/L</span>
           <i :class="[
             'fas ml-1',
-            currentSortColumn === 'id' 
+            currentSortColumn === 'id'
               ? currentSortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'
               : 'fa-sort text-gray-300'
           ]"></i>
@@ -21,22 +17,17 @@
       </th>
 
       <!-- Dynamic Columns -->
-      <th
-        v-for="column in columns"
-        :key="column.key"
+      <th v-for="column in columns" :key="column.key"
         class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
-        @click="handleSort(column.key)"
-        :class="{ 
+        @click="handleSort(column.key)" :class="{
           'bg-gray-100 dark:bg-gray-700': currentSortColumn === column.key,
           'text-right': column.align === 'right'
-        }"
-        :style="column.width ? `width: ${column.width}` : ''"
-      >
+        }" :style="column.width ? `width: ${column.width}` : ''">
         <div :class="['flex items-center', column.align === 'right' ? 'justify-end' : '']">
           <span>{{ column.label }}</span>
           <i v-if="column.sortable !== false" :class="[
             'fas ml-1',
-            currentSortColumn === column.key 
+            currentSortColumn === column.key
               ? currentSortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'
               : 'fa-sort text-gray-300'
           ]"></i>
@@ -44,11 +35,8 @@
       </th>
 
       <!-- Actions Column -->
-      <th 
-        v-if="showActionsColumn"
-        scope="col" 
-        class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
-      >
+      <th v-if="showActionsColumn" scope="col"
+        class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
         Actions
       </th>
     </tr>
@@ -64,7 +52,7 @@ const props = defineProps({
     required: true,
     default: () => []
   },
-  
+
   // Sort State - Accept both string or object
   sortBy: {
     type: [String, Object],
@@ -75,7 +63,7 @@ const props = defineProps({
     default: 'asc',
     validator: (value) => ['asc', 'desc'].includes(value)
   },
-  
+
   // Column Visibility
   showSlColumn: {
     type: Boolean,
@@ -111,19 +99,19 @@ const currentSortDirection = computed(() => {
 // Methods
 const handleSort = (columnKey) => {
   const column = props.columns.find(col => col.key === columnKey);
-  
+
   // Check if column is sortable
   if (column && column.sortable === false) {
     return;
   }
-  
+
   let newDirection = 'asc';
-  
+
   if (currentSortColumn.value === columnKey) {
     // Toggle direction if same column
     newDirection = currentSortDirection.value === 'asc' ? 'desc' : 'asc';
   }
-  
+
   emit('sort', {
     column: columnKey,
     direction: newDirection

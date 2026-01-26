@@ -2,36 +2,41 @@
 
 namespace App\Services;
 
-use App\Contracts\BankServiceInterface;
-use App\Models\Bank;
+use App\Contracts\TransactionServiceInterface;
+use App\Models\Transaction;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class BankService implements BankServiceInterface
+class TransactionService implements TransactionServiceInterface
 {
-    public function __construct(protected Bank $model) {}
+    public function __construct(protected Transaction $model) {}
 
     public function get(Request $request): LengthAwarePaginator
     {
         $length = $request->input('length') ?? $request->input('per_page', 10);
         $search = $request->input('search');
         $status = $request->input('status');
-
         $sortBy = $request->input('sort_by', 'id');
         $sortOrder = $request->input('sort_direction', 'desc');
 
+
         $columns = [
             'id',
-            'bank_name',
-            'address',
-            'phone',
-            'mobile',
-            'fax',
-            'email',
-            'website',
+            'user_id',
+            'account_id',
+            'bounce_transaction_id',
+            'date',
+            'type',
+            'details',
+            'deposit',
+            'withdraw',
+            'receive_from',
+            'payment_to',
+            'attachment',
+            'bounce_details',
             'created',
             'modified',
             'status',
@@ -45,12 +50,14 @@ class BankService implements BankServiceInterface
             $sortOrder = 'desc';
         }
 
-        $query = $this->model->query();
+        $query = $this->model->query()
+            ->with(['account', 'user'])
+            ->where('status', '!=', '2');
 
         $query
             ->when($search && is_string($search), function ($q) use ($search) {
                 $q->where(function ($q) use ($search) {
-                    foreach ((new Bank)->getFillable() as $column) {
+                    foreach ((new Transaction)->getFillable() as $column) {
                         $q->orWhere($column, 'like', "%{$search}%");
                     }
                 });
@@ -58,6 +65,20 @@ class BankService implements BankServiceInterface
             ->when($status, function ($q) use ($status) {
                 $q->where('status', $status);
             });
+
+        if ($request->filled('account_number')) {
+            $query->whereHas('account', function ($q) use ($request) {
+                $q->where('account_number', $request->account_number);
+            });
+        }
+
+        if ($request->filled('from_date') && $request->filled('to_date')) {
+            $query->whereBetween('date', [
+                $request->from_date,
+                $request->to_date
+            ]);
+        }
+
         $query->orderBy($sortBy, $sortOrder);
 
         return $length === -1
@@ -75,13 +96,13 @@ class BankService implements BankServiceInterface
 
     public function find(int $id): Model
     {
-        $bank = $this->model->findOrFail($id);
+        $transaction = $this->model->findOrFail($id);
 
-        if (! $bank) {
+        if (! $transaction) {
             throw new Exception('featureName not found.');
         }
 
-        return $bank;
+        return $transaction;
     }
 
     public function store(array $data): ?Model
@@ -131,14 +152,18 @@ class BankService implements BankServiceInterface
 
         // Sorting (safe)
         $allowedSorts = [
-            'id',
-            'bank_name',
-            'address',
-            'phone',
-            'mobile',
-            'fax',
-            'email',
-            'website',
+            'user_id',
+            'account_id',
+            'bounce_transaction_id',
+            'date',
+            'type',
+            'details',
+            'deposit',
+            'withdraw',
+            'receive_from',
+            'payment_to',
+            'attachment',
+            'bounce_details',
             'created',
             'modified',
             'status',
@@ -159,13 +184,19 @@ class BankService implements BankServiceInterface
         // Search
         if (! empty($search)) {
             $query->where(function ($q) use ($search) {
-                $q->where('bank_name', 'like', "%{$search}%")
-                    ->orWhere('address', 'like', "%{$search}%")
-                    ->orWhere('phone', 'like', "%{$search}%")
-                    ->orWhere('mobile', 'like', "%{$search}%")
-                    ->orWhere('fax', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('website', 'like', "%{$search}%");
+                $q->where('id', 'like', "%{$search}%")
+                    ->orWhere('user_id', 'like', "%{$search}%")
+                    ->orWhere('account_id', 'like', "%{$search}%")
+                    ->orWhere('bounce_transaction_id', 'like', "%{$search}%")
+                    ->orWhere('date', 'like', "%{$search}%")
+                    ->orWhere('type', 'like', "%{$search}%")
+                    ->orWhere('details', 'like', "%{$search}%")
+                    ->orWhere('deposit', 'like', "%{$search}%")
+                    ->orWhere('withdraw', 'like', "%{$search}%")
+                    ->orWhere('receive_from', 'like', "%{$search}%")
+                    ->orWhere('payment_to', 'like', "%{$search}%")
+                    ->orWhere('attachment', 'like', "%{$search}%")
+                    ->orWhere('bounce_details', 'like', "%{$search}%");
             });
         }
 

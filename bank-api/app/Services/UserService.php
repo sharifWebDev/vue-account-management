@@ -50,6 +50,11 @@ class UserService implements UserServiceInterface
             $sortBy = 'id';
         }
 
+
+        if ($sortBy == 'company_id') {
+            $sortBy = 'company_ids';
+        }
+
         if (! in_array(strtolower($sortOrder), ['asc', 'desc'])) {
             $sortOrder = 'desc';
         }
@@ -66,12 +71,6 @@ class UserService implements UserServiceInterface
                     ->orWhere('email', 'like', "%{$search}%")
                     ->orWhereHas('company', function ($q) use ($search) {
                         $q->where('company_name', 'like', "%{$search}%");
-                    })
-                    ->orWhereHas('bank', function ($q) use ($search) {
-                        $q->where('bank_name', 'like', "%{$search}%");
-                    })
-                    ->orWhereHas('branch', function ($q) use ($search) {
-                        $q->where('branch_name', 'like', "%{$search}%");
                     });
             });
         }
@@ -173,7 +172,10 @@ class UserService implements UserServiceInterface
         $sortBy = $request->input('sort_by', 'id');
         $sortDirection = strtolower($request->input('sort_direction', 'asc'));
 
-        // Prevent array / invalid column crash
+        if ($sortBy == 'company_id') {
+            $sortBy = 'company_ids';
+        }
+
         if (! is_string($sortBy) || ! in_array($sortBy, $allowedSorts, true)) {
             $sortBy = 'id';
         }

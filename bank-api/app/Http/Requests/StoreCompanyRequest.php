@@ -31,7 +31,7 @@ class StoreCompanyRequest extends FormRequest
                 'unique:companies,email',
             ],
             'website' => ['nullable', 'string', 'max:255', 'url', 'active_url'],
-            'logo' => ['nullable', 'file', 'image', 'mimes:jpeg,png,jpg,gif,svg,webp,bmp,ico', 'max:10240'],
+            'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg,webp,bmp,ico', 'max:10240'],
             'created' => ['nullable', 'date'],
             'modified' => ['nullable', 'date'],
             'status' => ['nullable', 'boolean', 'max:1'],
