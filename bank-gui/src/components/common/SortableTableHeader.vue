@@ -3,9 +3,9 @@
     <tr>
       <!-- SL Column -->
       <th v-if="showSlColumn" scope="col"
-        class="px-6 py-3 wtext-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+        class="px-6 py-3 wtext-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer  w-[60px]"
         @click="handleSort('id')" :class="{ 'bg-gray-100 dark:bg-gray-700': currentSortColumn === 'id' }">
-        <div class="flex items-center">
+        <div class="flex items-center justify-start">
           <span>S/L</span>
           <i :class="[
             'fas ml-1',

@@ -1,9 +1,9 @@
 <template>
   <main class="">
-      <BranchManagement />
-    </main>
+    <BranchManagement />
+  </main>
 </template>
 
 <script setup>
-import BranchManagement from '@/components/Branch.vue';
+import BranchManagement from '@/components/pages/branch/Branch.vue';
 </script>

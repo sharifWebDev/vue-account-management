@@ -23,104 +23,44 @@
       <!-- Right Side: Search -->
       <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
         <div class="relative flex-grow max-w-md">
-          <input v-model="searchQuery" @input="handleSearch" type="text"
+          <input v-model="searchQuery" @input="handleSearch" type="search"
             placeholder="Search by account name or number..."
-            class="w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition-all focus:shadow-sm" />
+            class="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition-all focus:shadow-sm" />
           <div class="absolute left-3 top-2.5 text-gray-400">
             <i class="fas fa-search text-base"></i>
           </div>
-          <button v-if="searchQuery" @click="clearSearch"
-            class="absolute right-2 top-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-            <i class="fas fa-times text-sm"></i>
+        </div>
+        <div
+          class="text-xs text-gray-500 dark:text-gray-400 flex items-center border border-gray-300 dark:border-gray-600 rounded-lg px-2 py-1">
+          <button @click="refreshData" class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+            :disabled="refresh">
+            <i class="fas fa-sync-alt text-xs" :class="{ 'animate-spin': refresh }"></i>
           </button>
         </div>
+
       </div>
     </div>
 
     <!-- Data Table -->
-    <div class="bg-white dark:bg-gray-700 rounded-lg shadow overflow-hidden">
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead class="bg-gray-50 dark:bg-gray-800">
-            <tr>
-              <th scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                @click="sortByColumn('id')">
-                SL
-                <i v-if="accountStore.sortBy === 'id'" :class="[
-                  'fas ml-1',
-                  accountStore.sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'
-                ]"></i>
-                <i v-else class="fas ml-1 fa-sort text-gray-300"></i>
-              </th>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
-                @click="sortByColumn('account_name')">
-                Account Name
-                <i v-if="accountStore.sortBy === 'account_name'" :class="[
-                  'fas ml-1',
-                  accountStore.sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'
-                ]"></i>
-                <i v-else class="fas ml-1 fa-sort text-gray-300"></i>
-              </th>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
-                @click="sortByColumn('account_number')">
-                Account Number
-                <i v-if="accountStore.sortBy === 'account_number'" :class="[
-                  'fas ml-1',
-                  accountStore.sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'
-                ]"></i>
-                <i v-else class="fas ml-1 fa-sort text-gray-300"></i>
-              </th>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
-                @click="sortByColumn('bank_name')">
-                Bank Name
-                <i v-if="accountStore.sortBy === 'bank_name'" :class="[
-                  'fas ml-1',
-                  accountStore.sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'
-                ]"></i>
-                <i v-else class="fas ml-1 fa-sort text-gray-300"></i>
-              </th>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
-                @click="sortByColumn('branch_name')">
-                Branch Name
-                <i v-if="accountStore.sortBy === 'branch_name'" :class="[
-                  'fas ml-1',
-                  accountStore.sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'
-                ]"></i>
-                <i v-else class="fas ml-1 fa-sort text-gray-300"></i>
-              </th>
-              <th scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                @click="sortByColumn('status')">
-                Status
-                <i v-if="accountStore.sortBy === 'status'" :class="[
-                  'fas ml-1',
-                  accountStore.sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'
-                ]"></i>
-                <i v-else class="fas ml-1 fa-sort text-gray-300"></i>
-              </th>
-              <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
+    <div class="bg-white dark:bg-gray-700 rounded-lg shadow overflow-visible"> <!-- Changed from overflow-hidden -->
+      <div class="overflow-visible"> <!-- Changed from overflow-x-auto -->
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 relative">
+          <SortableTableHeader :columns="tableColumns" :sort-by="accountStore.sortBy"
+            :sort-direction="accountStore.sortDirection" :show-actions-column="true" :show-sl-column="true"
+            @sort="sortByColumn" />
+
+          <!-- Loading State - Inside table body -->
+          <TableLoadingState v-if="accountStore.loading" :is-loading="true" :total-items="accountStore.totalItems"
+            :item-name="'accounts'" loading-text="Loading accounts..." loading-subtext="Fetching your account data" />
+
           <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
 
-            <!-- Loading State - Inside table body -->
-            <TableLoadingState v-if="accountStore.loading" :is-loading="true" :total-items="accountStore.totalItems"
-              :item-name="'accounts'" loading-text="Loading accounts..." loading-subtext="Fetching your account data" />
-
             <!-- Empty State -->
-            <TableLoadingState v-else-if="accountStore.items.length === 0" :is-loading="false" :isEmpty="true"
+            <TableLoadingState v-if="accountStore.items.length === 0" :is-loading="false" :isEmpty="true"
               :has-search="!!searchQuery" :item-name="'accounts'" empty-icon="fas fa-users"
               empty-title="No accounts found"
               :empty-message="searchQuery ? 'No accounts match your search criteria.' : 'Get started by creating your first account.'"
               :create-button-text="'Add First Account'" @create="openCreateModal" @clear-search="clearSearch" />
-
 
             <tr v-else v-for="(data, index) in displayedItems" :key="data.id"
               class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
@@ -130,6 +70,9 @@
               <td class="px-6 py-3 whitespace-nowrap">
                 <div class="text-sm font-medium text-gray-900 dark:text-white">
                   {{ data.account_name }}
+                </div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">
+                  Company: {{ data.company_name ? data.company_name : '' }}
                 </div>
               </td>
               <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
@@ -141,6 +84,9 @@
               <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
                 {{ data.branch_name || 'N/A' }}
               </td>
+              <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+                {{ data.opening_balance || '' }}
+              </td>
               <td class="px-6 py-3 whitespace-nowrap">
                 <span :class="[
                   data.status === 1 || data.status === true
@@ -151,43 +97,63 @@
                   {{ data.status === 1 || data.status === true ? 'Active' : 'Inactive' }}
                 </span>
               </td>
-              <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                <button @click="toggleStatus(data, 'status')"
-                  class="p-1 rounded bg-gray-50 dark:bg-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900/30 transition-colors"
-                  title="Toggle Status">
-                  <span :class="[
-                    'relative inline-flex h-4 w-7 items-center rounded-full transition-colors duration-300',
-                    data.status === 1 || data.status === true
-                      ? 'bg-green-500'
-                      : 'bg-gray-400 dark:bg-gray-600'
-                  ]">
+              <td class="px-6 py-3 text-right text-sm font-medium relative">
+                <div class="flex items-center justify-end gap-2">
+
+                  <button @click="toggleStatus(data, 'status')"
+                    class="p-1 rounded bg-gray-50 dark:bg-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900/30 transition-colors"
+                    title="Toggle Status">
                     <span :class="[
-                      'inline-block h-3 w-3 transform rounded-full bg-white transition-transform duration-300',
-                      data.status === 1 || data.status === true
-                        ? 'translate-x-3.5'
-                        : 'translate-x-0.5'
-                    ]"></span>
-                  </span>
-                </button>
-                <button @click="viewAccount(data)"
-                  class="text-cyan-600 hover:text-cyan-900 dark:text-cyan-400 dark:hover:text-cyan-300 p-1 rounded bg-blue-50 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors  dark:bg-gray-500 "
-                  title="View">
-                  <i class="fas fa-eye"></i>
-                </button>
-                <button @click="editAccount(data)"
-                  class="text-yellow-600 hover:text-yellow-900 dark:text-yellow-400 dark:hover:text-yellow-300 p-1 rounded bg-yellow-50 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 transition-colors dark:bg-gray-500 "
-                  title=" Edit">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button @click="confirmDelete(data)"
-                  class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 p-1 rounded bg-red-50 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors dark:bg-gray-500"
-                  title="Delete">
-                  <i class="fas fa-trash"></i>
-                </button>
+                      'relative inline-flex h-4 w-7 items-center rounded-full transition-colors duration-300',
+                      data.status === 1 || data.status === true ? 'bg-green-500' : 'bg-gray-400 dark:bg-gray-600'
+                    ]">
+                      <span :class="[
+                        'inline-block h-3 w-3 transform rounded-full bg-white transition-transform duration-300',
+                        data.status === 1 || data.status === true ? 'translate-x-3.5' : 'translate-x-0.5'
+                      ]"></span>
+                    </span>
+                  </button>
+
+                  <button @click="viewAccount(data)"
+                    class="text-cyan-600 hover:text-cyan-900 dark:text-cyan-400 dark:hover:text-cyan-300 p-1 rounded bg-blue-50 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors dark:bg-gray-500"
+                    title="View">
+                    <i class="fas fa-eye"></i>
+                  </button>
+
+                  <div class="relative inline-block text-left" v-click-outside="() => data.showDropdown = false">
+                    <button @click="data.showDropdown = !data.showDropdown"
+                      class="p-1.5 rounded-md bg-gray-50 dark:bg-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                      title="Actions">
+                      <i class="fas fa-ellipsis-v text-gray-600 dark:text-gray-200"></i>
+                    </button>
+
+                    <div v-if="data.showDropdown" class="absolute right-0 z-[100] w-44 mt-2
+                      origin-top-right rounded-md shadow-xl
+                      bg-white dark:bg-gray-800
+                      ring-1 ring-black ring-opacity-5
+                      divide-y divide-gray-100 dark:divide-gray-700
+                      focus:outline-none">
+
+                      <div class="py-1">
+                        <button @click="editAccount(data); data.showDropdown = false"
+                          class="w-full px-4 py-2 text-left text-sm flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200">
+                          <i class="fas fa-edit text-yellow-500"></i>
+                          Edit
+                        </button>
+
+                        <button @click="confirmDelete(data); data.showDropdown = false"
+                          class="w-full px-4 py-2 text-left text-sm flex items-center gap-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30">
+                          <i class="fas fa-trash"></i>
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
               </td>
+
             </tr>
-
-
           </tbody>
         </table>
       </div>
@@ -295,7 +261,6 @@
             {{ accountStore.validationErrors.opening_balance[0] }}
           </p>
         </div>
-
         <!-- Status -->
         <div>
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
@@ -439,7 +404,53 @@
       </div>
     </div>
   </BaseModal>
+
+  <!-- Status Change Confirmation Modal -->
+  <BaseModal :show="showStatusChangeModal" title="Change Status" maxWidth="lg" :showClose="false"
+    @close="closeStatusChangeModal">
+    <div class="px-6 py-3">
+      <div class="text-center">
+        <div
+          class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 dark:bg-yellow-900 mb-4">
+          <i class="fas fa-exchange-alt text-yellow-600 dark:text-yellow-300 text-xl"></i>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Change Account Status</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+          Are you sure you want to change the status of
+          <strong>{{ statusChangingAccount?.account_name }}</strong>
+          to
+          <strong>
+            <span :class="[
+              statusChangingAccount?.status === 1 || statusChangingAccount?.status === true
+                ? 'text-red-600 dark:text-red-400'
+                : 'text-green-600 dark:text-green-400'
+            ]">
+              {{ statusChangingAccount?.status === 1 || statusChangingAccount?.status === true ? 'Inactive' : 'Active'
+              }}
+            </span>
+          </strong>?
+        </p>
+      </div>
+      <div class="flex justify-center space-x-3">
+        <button @click="closeStatusChangeModal"
+          class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+          Cancel
+        </button>
+        <button @click="confirmStatusChange" :disabled="accountStore.loading" :class="[
+          'px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors',
+          accountStore.loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-gray-600 hover:bg-gray-700'
+        ]">
+          <span v-if="accountStore.loading">
+            <i class="fas fa-spinner fa-spin mr-2"></i>
+            Updating...
+          </span>
+          <span v-else>Confirm Change</span>
+        </button>
+      </div>
+    </div>
+  </BaseModal>
 </template>
+
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import { useAccountStore } from '@/stores/accountStore';
@@ -450,6 +461,45 @@ import BaseModal from '@/components/common/BaseModal.vue';
 import Pagination from '@/components/common/Pagination.vue';
 import Breadcrumb from '@/components/core/Breadcrumb.vue';
 import TableLoadingState from '@/components/core/TableLoadingState.vue';
+import SortableTableHeader from '@/components/common/SortableTableHeader.vue';
+const refresh = ref(false);
+
+
+const tableColumns = ref([
+  {
+    key: 'account_name',
+    label: 'Account',
+    sortable: true,
+    width: '200px'
+  },
+  {
+    key: 'account_number',
+    label: 'Account Number',
+    sortable: true,
+    width: '200px'
+  },
+  {
+    key: 'bank_name',
+    label: 'Bank Name',
+    sortable: true
+  },
+  {
+    key: 'branch_name',
+    label: 'Branch Name',
+    sortable: true
+  },
+  {
+    key: 'opening_balance',
+    label: 'Opening Balance',
+    sortable: true
+  },
+  {
+    key: 'status',
+    label: 'Status',
+    sortable: true,
+    width: '100px'
+  }
+]);
 
 // Initialize stores
 const accountStore = useAccountStore();
@@ -461,6 +511,7 @@ const branchStore = useBranchStore();
 const isModalOpen = ref(false);
 const showViewModal = ref(false);
 const showDeleteModal = ref(false);
+const showStatusChangeModal = ref(false); // New modal for status change
 
 // Search query with debounce
 const searchQuery = ref('');
@@ -481,6 +532,7 @@ const formData = ref({
 const currentAccount = ref(null);
 const viewingAccount = ref(null);
 const deletingAccount = ref(null);
+const statusChangingAccount = ref(null); // New variable for status change
 const modalMode = ref('create');
 
 const displayedItems = computed(() => {
@@ -548,13 +600,23 @@ watch(searchQuery, (newValue) => {
 });
 
 onMounted(async () => {
-  if (accountStore.items.length === 0) {
-    await accountStore.get();
-  } else {
-    console.log('Data already loaded.');
-  }
+  getData();
   loadRelatedData();
 });
+
+const getData = async () => {
+  await accountStore.get();
+};
+
+const refreshData = async () => {
+  refresh.value = true;
+  try {
+    clearSearch();
+  } finally {
+    refresh.value = false;
+  }
+}
+
 
 const loadRelatedData = () => {
   companyStore.getAll();
@@ -597,6 +659,11 @@ const confirmDelete = (account) => {
   showDeleteModal.value = true;
 };
 
+const toggleStatus = (account, field) => {
+  statusChangingAccount.value = account;
+  showStatusChangeModal.value = true;
+};
+
 const closeModal = () => {
   isModalOpen.value = false;
   resetForm();
@@ -611,6 +678,11 @@ const closeViewModal = () => {
 const closeDeleteModal = () => {
   showDeleteModal.value = false;
   deletingAccount.value = null;
+};
+
+const closeStatusChangeModal = () => {
+  showStatusChangeModal.value = false;
+  statusChangingAccount.value = null;
 };
 
 const resetForm = () => {
@@ -657,7 +729,7 @@ const handleSubmit = async () => {
 
   if (result && result.success) {
     closeModal();
-    await accountStore.get();
+    getData();
   }
 };
 
@@ -666,21 +738,25 @@ const handleDelete = async () => {
     const result = await accountStore.deleteItem(deletingAccount.value.id);
     if (result.success) {
       closeDeleteModal();
-      await accountStore.get();
+      getData();
     }
   }
 };
 
-const toggleStatus = async (item, field) => {
-  try {
-    await accountStore.toggleStatus(item, field);
-    await accountStore.get();
-  } catch (error) {
-    console.error("Error toggling status:", error);
+const confirmStatusChange = async () => {
+  if (statusChangingAccount.value) {
+    try {
+      const field = 'status';
+      await accountStore.toggleStatus(statusChangingAccount.value, field);
+      closeStatusChangeModal();
+      getData();
+    } catch (error) {
+      console.error("Error toggling status:", error);
+    }
   }
 };
 
-// Pagination and sorting - FIXED: These functions now correctly handle pagination events
+// Pagination and sorting
 const handlePerPageChange = async (newPerPage) => {
   await accountStore.changePerPage(newPerPage);
 };
@@ -694,6 +770,7 @@ const sortByColumn = async (column) => {
   await accountStore.sort(column, order);
 };
 </script>
+
 <style scoped>
 input,
 select,

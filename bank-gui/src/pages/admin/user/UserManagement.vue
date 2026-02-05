@@ -1,9 +1,9 @@
 <template>
   <main class="">
-      <UserManagement />
-    </main>
+    <UserManagement />
+  </main>
 </template>
 
 <script setup>
-import UserManagement from '@/components/User.vue';
+import UserManagement from '@/components/pages/users/User.vue';
 </script>

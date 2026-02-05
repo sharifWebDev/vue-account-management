@@ -229,8 +229,8 @@ const toggleDarkMode = () => {
 const notifications = ref([
   {
     id: 1,
-    title: 'Application built successfully',
-    message: 'Your app "Inventory Manager" has been successfully built.',
+    title: 'Transaction Completed',
+    message: 'Your transaction has been successfully completed.',
     time: '2 hours ago',
     unread: true,
     icon: 'fas fa-check-circle text-sm',

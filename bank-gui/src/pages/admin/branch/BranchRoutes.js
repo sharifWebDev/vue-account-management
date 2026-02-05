@@ -1,24 +1,23 @@
-import BranchManagement from './BranchManagement.vue';
-import BranchTrash from '@/components/BranchTrash.vue';
+import BranchManagement from "./BranchManagement.vue";
+import BranchTrash from "@/components/pages/branch/BranchTrash.vue";
 
 export default [
   {
-    path: '/branch',
+    path: "/branch",
     component: BranchManagement,
     meta: {
       requiresAuth: true,
-      title: 'Branch',
-      breadcrumb: 'Branch'
-    }
+      title: "Branch",
+      breadcrumb: "Branch",
+    },
   },
   {
-    path: '/branch/trash',
+    path: "/branch/trash",
     component: BranchTrash,
     meta: {
       requiresAuth: true,
-      title: 'Branch Trash',
-      breadcrumb: 'Branch Trash'
-    }
-  }
-]
-
+      title: "Branch Trash",
+      breadcrumb: "Branch Trash",
+    },
+  },
+];

@@ -1,9 +1,9 @@
 <template>
   <main class="">
-      <BankManagement />
-    </main>
+    <BankManagement />
+  </main>
 </template>
 
 <script setup>
-import BankManagement from '@/components/Bank.vue';
+import BankManagement from '@/components/pages/banks/Bank.vue';
 </script>

@@ -3,7 +3,7 @@ import App from "./App.vue";
 import { createPinia } from "pinia";
 import router from "./router";
 import { useAuthStore } from "@/stores/authStore";
-import './assets/main.css';
+import "./assets/main.css";
 import "toastr/build/toastr.min.css";
 import "@fontsource/plus-jakarta-sans/400.css";
 import "@fontsource/plus-jakarta-sans/500.css";
@@ -11,7 +11,11 @@ import "@fontsource/plus-jakarta-sans/700.css";
 import { info, success, error, warning } from "@/utils/alerts.js";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faUser, faHome, faSignOutAlt } from "@fortawesome/free-solid-svg-icons"; 
+import {
+  faUser,
+  faHome,
+  faSignOutAlt,
+} from "@fortawesome/free-solid-svg-icons";
 import "@fortawesome/fontawesome-free/css/all.css";
 library.add(faUser, faHome, faSignOutAlt);
 import Toast from "vue-toastification";
@@ -20,16 +24,15 @@ import "flatpickr/dist/flatpickr.css";
 import "vue-multiselect/dist/vue-multiselect.css";
 
 const toastOptions = {
-    position: "top-right",
-    timeout: 4000,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    showCloseButtonOnHover: false,
-    hideProgressBar: false,
-    icon: true,
+  position: "top-right",
+  timeout: 4000,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  showCloseButtonOnHover: false,
+  hideProgressBar: false,
+  icon: true,
 };
- 
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -45,5 +48,19 @@ app.config.globalProperties.$warning = warning;
 
 const authStore = useAuthStore();
 authStore.initializeAuth();
+
+app.directive("click-outside", {
+  beforeMount(el, binding) {
+    el.clickOutsideEvent = (event) => {
+      if (!(el == event.target || el.contains(event.target))) {
+        binding.value(event);
+      }
+    };
+    document.addEventListener("click", el.clickOutsideEvent);
+  },
+  unmounted(el) {
+    document.removeEventListener("click", el.clickOutsideEvent);
+  },
+});
 
 app.mount("#app");

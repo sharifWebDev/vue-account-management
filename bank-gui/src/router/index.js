@@ -12,6 +12,7 @@ import BranchRoutes from "@/pages/admin/branch/BranchRoutes.js";
 import CompanyRoutes from "@/pages/admin/company/CompanyRoutes.js";
 import UserRoutes from "@/pages/admin/user/UserRoutes.js";
 import TransactionRoutes from "@/pages/admin/transaction/TransactionRoutes.js";
+import TransactionTypeRoutes from "@/pages/admin/transactionType/TransactiontypeRoutes.js";
 
 const routes = [
   /* ================= Default Route ================= */
@@ -70,6 +71,7 @@ const routes = [
       ...UserRoutes,
       ...TransactionRoutes,
       ...SizeTypeRoutes,
+      ...TransactionTypeRoutes,
     ],
   },
 

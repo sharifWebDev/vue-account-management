@@ -1,24 +1,23 @@
-import UserManagement from './UserManagement.vue';
-import TrashUser from '@/components/TrashUser.vue';
+import UserManagement from "./UserManagement.vue";
+import TrashUser from "@/components/pages/users/TrashUser.vue";
 
 export default [
   {
-    path: '/user',
+    path: "/user",
     component: UserManagement,
     meta: {
       requiresAuth: true,
-      title: 'User',
-      breadcrumb: 'User'
-    }
+      title: "User",
+      breadcrumb: "User",
+    },
   },
   {
-    path: '/user/trash',
+    path: "/user/trash",
     component: TrashUser,
     meta: {
       requiresAuth: true,
-      title: 'User Trash',
-      breadcrumb: 'User Trash'
-    }
-  }
-]
-
+      title: "User Trash",
+      breadcrumb: "User Trash",
+    },
+  },
+];

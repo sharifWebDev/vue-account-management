@@ -227,7 +227,7 @@
         <div>
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Company Name *</label>
           <select v-model="formData.company_id" @change="clearValidationError('company_id')"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition-all"
+            class="w-full pl-4 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-400 dark:bg-gray-700 dark:text-white focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition-all"
             :class="{ 'border-red-500': accountStore.validationErrors.company_id }">
             <option value="">--Select Company--</option>
             <option v-for="company in companies" :key="company.id" :value="company.id">
@@ -243,7 +243,7 @@
         <div>
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Bank Name *</label>
           <select v-model="formData.bank_id" @change="clearValidationError('bank_id')"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition-all"
+            class="w-full pl-4 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-400 dark:bg-gray-700 dark:text-white focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition-all"
             :class="{ 'border-red-500': accountStore.validationErrors.bank_id }">
             <option value="">--Select Bank--</option>
             <option v-for="bank in banks" :key="bank.id" :value="bank.id">
@@ -259,7 +259,7 @@
         <div>
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Branch Name *</label>
           <select v-model="formData.branch_id" @change="clearValidationError('branch_id')"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition-all"
+            class="w-full pl-4 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-400 dark:bg-gray-700 dark:text-white focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition-all"
             :class="{ 'border-red-500': accountStore.validationErrors.branch_id }">
             <option value="">--Select Branch--</option>
             <option v-for="branch in branches" :key="branch.id" :value="branch.id">
@@ -276,7 +276,7 @@
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Account Name *</label>
           <input v-model="formData.account_name" type="text" placeholder="Enter account name"
             @change="clearValidationError('account_name')"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition-all"
+            class="w-full pl-4 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-400 dark:bg-gray-700 dark:text-white focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition-all"
             :class="{ 'border-red-500': accountStore.validationErrors.account_name }">
           <p v-if="accountStore.validationErrors.account_name" class="text-xs text-red-600 dark:text-red-400 mt-1">
             {{ accountStore.validationErrors.account_name[0] }}
@@ -288,7 +288,7 @@
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Account Number *</label>
           <input v-model="formData.account_number" type="text" placeholder="Enter account number"
             @change="clearValidationError('account_number')"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition-all"
+            class="w-full pl-4 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-400 dark:bg-gray-700 dark:text-white focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition-all"
             :class="{ 'border-red-500': accountStore.validationErrors.account_number }">
           <p v-if="accountStore.validationErrors.account_number" class="text-xs text-red-600 dark:text-red-400 mt-1">
             {{ accountStore.validationErrors.account_number[0] }}
@@ -300,7 +300,7 @@
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cheque Book</label>
           <input v-model="formData.cheque_book" type="text" placeholder="Enter cheque book"
             @change="clearValidationError('cheque_book')"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition-all">
+            class="w-full pl-4 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-400 dark:bg-gray-700 dark:text-white focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition-all">
         </div>
 
         <!-- Opening Balance -->
@@ -308,7 +308,7 @@
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Opening Balance</label>
           <input v-model="formData.opening_balance" type="number" step="0.01" placeholder="Enter opening balance"
             @change="clearValidationError('opening_balance')"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition-all">
+            class="w-full pl-4 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-400 dark:bg-gray-700 dark:text-white focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition-all">
           <p v-if="accountStore.validationErrors.opening_balance" class="text-xs text-red-600 dark:text-red-400 mt-1">
             {{ accountStore.validationErrors.opening_balance[0] }}
           </p>
@@ -320,12 +320,12 @@
           <div class="flex items-center space-x-6">
             <label class="inline-flex items-center cursor-pointer">
               <input v-model="formData.status" type="radio" :value="1" @change="clearValidationError('status')"
-                class="h-4 w-4 text-gray-600 focus:ring-green-600 border-green-300 dark:border-green-600 dark:bg-green-700">
+                class="h-4 w-4 text-gray-600 focus:ring-green-600 border-green-300 dark:border-green-600 dark:bg-green-700 accent-green-600">
               <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Active</span>
             </label>
             <label class="inline-flex items-center cursor-pointer">
               <input v-model="formData.status" type="radio" :value="0" @change="clearValidationError('status')"
-                class="h-4 w-4 text-red-600 focus:ring-red-600 border-red-300 dark:border-red-600 dark:bg-red-700">
+                class="h-4 w-4 text-red-600 focus:ring-red-600 border-red-300 dark:border-red-600 dark:bg-red-700 accent-red-600">
               <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Inactive</span>
             </label>
           </div>
@@ -402,7 +402,7 @@
         <div>
           <label class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Opening Balance</label>
           <p class="text-sm text-gray-900 dark:text-white mt-1">{{ formatCurrency(viewingAccount.opening_balance || 0)
-            }}</p>
+          }}</p>
         </div>
         <div>
           <label class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Status</label>

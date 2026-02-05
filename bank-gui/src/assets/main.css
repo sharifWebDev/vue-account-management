@@ -135,4 +135,29 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-} 
+}
+
+/* input type=radio color/ red/green */
+input[type=radio] {
+    color: #4ade80; 
+    border: 2px solid #4ade80; 
+}
+
+@layer base {
+  input, textarea, select {
+    @apply border border-gray-300 dark:border-gray-600
+           focus:outline-none focus:ring-0;
+  }
+
+  .dark input:focus,
+  .dark textarea:focus,
+  .dark select:focus {
+    @apply border-gray-400;
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    @apply border-gray-600;
+  }
+}

@@ -8,13 +8,13 @@
     </div>
   </div>
 
-<div class="bg-white dark:bg-gray-800 p-3 rounded-lg dark:border dark:border-gray-700">
+  <div class="bg-white dark:bg-gray-800 p-3 rounded-lg dark:border dark:border-gray-700">
     <!-- Header with Filters and Search -->
     <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-4 gap-4">
       <!-- Left Side: Create Button -->
       <div class="flex flex-col sm:flex-row gap-4">
         <button @click="openCreateModal"
-         class="btn px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg flex items-center space-x-2 transition-colors">
+          class="btn px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg flex items-center space-x-2 transition-colors">
           <i class="fas fa-plus"></i>
           <span>Create New</span>
         </button>
@@ -22,36 +22,36 @@
       <!-- Right Side: Search -->
       <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
         <div class="relative flex-grow max-w-md">
-         <input v-model="localSearchQuery" @input="search" type="text" placeholder="Search by name or code..."
+          <input v-model="localSearchQuery" @input="search" type="text" placeholder="Search by name or code..."
             class="w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition-all focus:shadow-sm" />
           <div class="absolute left-3 top-2.5 text-gray-400">
             <i class="fas fa-search text-base"></i>
           </div>
-         <button v-if="localSearchQuery" @click="clearSearch"
+          <button v-if="localSearchQuery" @click="clearSearch"
             class="absolute right-2 top-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
             <i class="fas fa-times text-sm"></i>
           </button>
         </div>
       </div>
-   </div>
+    </div>
 
-  <!-- Loading State -->
+    <!-- Loading State -->
     <div v-if="sizeTypeStore.loading && sizeTypeStore.items.length === 0" class="text-center py-12">
       <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600"></div>
       <p class="mt-4 text-gray-600 dark:text-gray-400">Loading size types...</p>
     </div>
 
-  <!-- Data Table -->
+    <!-- Data Table -->
     <div v-else class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-         <thead class="bg-gray-50 dark:bg-gray-800">
+          <thead class="bg-gray-50 dark:bg-gray-800">
             <tr>
-             <th scope="col"
+              <th scope="col"
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                 @click="sortByColumn('id')">
                 SL
-               <i v-if="sortField === 'id'" :class="[
+                <i v-if="sortField === 'id'" :class="[
                   'fas ml-1',
                   sortOrder === 'asc' ? 'fa-sort-up' : 'fa-sort-down'
                 ]"></i>
@@ -62,7 +62,7 @@
                 Image
               </th>
               <th
-               class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
                 @click="sortByColumn('code')">
                 Code
                 <i v-if="sortField === 'code'" :class="[
@@ -71,7 +71,7 @@
                 ]"></i>
                 <i v-else class="fas ml-1 fa-sort text-gray-300"></i>
               </th>
-             <th
+              <th
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
                 @click="sortByColumn('name')">
                 Name
@@ -85,27 +85,27 @@
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                 @click="sortByColumn('sequence')">
                 Sequence
-               <i v-if="sortField === 'sequence'" :class="[
+                <i v-if="sortField === 'sequence'" :class="[
                   'fas ml-1',
                   sortOrder === 'asc' ? 'fa-sort-up' : 'fa-sort-down'
                 ]"></i>
                 <i v-else class="fas ml-1 fa-sort text-gray-300"></i>
               </th>
-             <th scope="col"
+              <th scope="col"
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                 @click="sortByColumn('status')">
                 Status
-               <i v-if="sortField === 'status'" :class="[
+                <i v-if="sortField === 'status'" :class="[
                   'fas ml-1',
                   sortOrder === 'asc' ? 'fa-sort-up' : 'fa-sort-down'
                 ]"></i>
                 <i v-else class="fas ml-1 fa-sort text-gray-300"></i>
               </th>
               <th
-               class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
                 @click="sortByColumn('created_at')">
                 Created
-               <i v-if="sortField === 'created_at'" :class="[
+                <i v-if="sortField === 'created_at'" :class="[
                   'fas ml-1',
                   sortOrder === 'asc' ? 'fa-sort-up' : 'fa-sort-down'
                 ]"></i>
@@ -117,7 +117,7 @@
             </tr>
           </thead>
           <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-           <tr v-for="(data, index) in displayedItems" :key="data.id"
+            <tr v-for="(data, index) in displayedItems" :key="data.id"
               class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
               <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                 {{ calculateRowNumber(index) }}
@@ -136,68 +136,68 @@
                 <div class="text-sm font-medium text-gray-900 dark:text-white">
                   {{ data.code }}
                 </div>
-             </td>
+              </td>
               <td class="px-6 py-3">
                 <div class="text-sm text-gray-700 dark:text-gray-300">
                   {{ data.name }}
                 </div>
               </td>
-             <td class="px-6 py-3 whitespace-nowrap">
-               <span class="text-sm font-medium text-gray-900 dark:text-white px-2">
+              <td class="px-6 py-3 whitespace-nowrap">
+                <span class="text-sm font-medium text-gray-900 dark:text-white px-2">
                   {{ data.sequence }}
                 </span>
               </td>
               <td class="px-6 py-3 whitespace-nowrap">
                 <div class="flex items-center space-x-2">
                   <span :class="[
-  data.status === 1 || data.status === true
+                    data.status === 1 || data.status === true
                       ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
                       : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
                     'px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full',
                   ]">
-                   {{ data.status === 1 || data.status === true ? "Active" : "Inactive" }}
+                    {{ data.status === 1 || data.status === true ? "Active" : "Inactive" }}
                   </span>
                 </div>
               </td>
               <td class="px-6 py-3 whitespace-nowrap">
                 <div class="text-sm text-gray-900 dark:text-white">
-                 {{ formatDate(data.created_at) }}
+                  {{ formatDate(data.created_at) }}
                 </div>
                 <div class="text-xs text-gray-500 dark:text-gray-400">
-                 {{ getHumanDate(data.created_at) }}
+                  {{ getHumanDate(data.created_at) }}
                 </div>
               </td>
               <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-right">
                 <div class="flex justify-end space-x-2">
-                 <button @click="toggleStatus(data)"
+                  <button @click="toggleStatus(data)"
                     class="p-1 rounded bg-gray-50 dark:bg-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900/30 transition-colors"
                     title="Toggle Status">
                     <span :class="[
                       'relative inline-flex h-4 w-7 items-center rounded-full transition-colors duration-300',
-  data.status === 1 || data.status === true
+                      data.status === 1 || data.status === true
                         ? 'bg-green-500'
                         : 'bg-gray-400 dark:bg-gray-600'
-]">
+                    ]">
                       <span :class="[
                         'inline-block h-3 w-3 transform rounded-full bg-white transition-transform duration-300',
-  data.status === 1 || data.status === true
+                        data.status === 1 || data.status === true
                           ? 'translate-x-3.5'
                           : 'translate-x-0.5'
-]"></span>
+                      ]"></span>
                     </span>
                   </button>
-                 <button @click="view(data)"
+                  <button @click="view(data)"
                     class="text-cyan-600 hover:text-cyan-900 dark:text-cyan-400 dark:hover:text-cyan-300 p-1 rounded bg-blue-50 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors  dark:bg-gray-500 "
                     title="View">
                     <i class="fas fa-eye"></i>
                   </button>
-                 <button @click="edit(data)"
+                  <button @click="edit(data)"
                     class="text-yellow-600 hover:text-yellow-900 dark:text-yellow-400 dark:hover:text-yellow-300 p-1 rounded bg-yellow-50 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 transition-colors dark:bg-gray-500 ""
                     title=" Edit">
                     <i class="fas fa-edit"></i>
                   </button>
                   <button @click="confirmDelete(data)"
-                   class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 p-1 rounded bg-red-50 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors dark:bg-gray-500"
+                    class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 p-1 rounded bg-red-50 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors dark:bg-gray-500"
                     title="Delete">
                     <i class="fas fa-trash"></i>
                   </button>
@@ -206,9 +206,9 @@
             </tr>
 
             <!-- Empty State -->
-           <tr v-if="displayedItems.length === 0 && !sizeTypeStore.loading"
+            <tr v-if="displayedItems.length === 0 && !sizeTypeStore.loading"
               class="h-[55vh] hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-             <td colspan="8" class="px-6 py-12 text-center">
+              <td colspan="8" class="px-6 py-12 text-center">
                 <div class="text-gray-500 dark:text-gray-400">
                   <i class="fas fa-ruler text-3xl mb-4"></i>
                   <p class="text-lg font-medium">No size types found</p>
@@ -225,7 +225,7 @@
       </div>
 
       <!-- Pagination -->
-     <div class="px-6 py-3 border-t border-gray-200 dark:border-gray-700">
+      <div class="px-6 py-3 border-t border-gray-200 dark:border-gray-700">
         <Pagination :total-items="sizeTypeStore.pagination.total" :per-page="sizeTypeStore.computedPerPage"
           :current-page="sizeTypeStore.pagination.current_page" :last-page="sizeTypeStore.pagination.last_page"
           @update:perPage="handlePerPageChange" @update:currentPage="handlePageChange" />
@@ -234,21 +234,21 @@
     </div>
 
     <!-- Create/Edit Modal -->
-   <BaseModal :show="isModalOpen" maxWidth="xl"
+    <BaseModal :show="isModalOpen" maxWidth="xl"
       :title="modalMode === 'create' ? 'Add New Size Type' : 'Edit Size Type'" @close="closeModal">
       <form @submit.prevent="handleSubmit" class="px-6 py-3">
-       <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-4">
           <!-- Code -->
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Code <span class="text-red-500 dark:text-red-400">*</span>
             </label>
-           <input v-model="formData.code" type="text" required @input="clearValidationError('code')" :class="[
+            <input v-model="formData.code" type="text" required @input="clearValidationError('code')" :class="[
               'w-full px-3 py-2 border rounded-lg focus:ring-1 focus:ring-gray-500 focus:outline-none transition-colors',
               sizeTypeStore.validationErrors.code
                 ? 'border-red-500 dark:border-red-500 bg-red-50 dark:bg-red-900/20 text-gray-900 dark:text-white'
                 : 'border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-gray-500'
-]" placeholder="Enter size type code (e.g., PSZT-001)">
+            ]" placeholder="Enter size type code (e.g., PSZT-001)">
             <p v-if="sizeTypeStore.validationErrors.code" class="text-xs text-red-600 dark:text-red-400 mt-1">
               {{ sizeTypeStore.validationErrors.code[0] }}
             </p>
@@ -262,12 +262,12 @@
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Name <span class="text-red-500 dark:text-red-400">*</span>
             </label>
-           <input v-model="formData.name" type="text" required @input="clearValidationError('name')" :class="[
+            <input v-model="formData.name" type="text" required @input="clearValidationError('name')" :class="[
               'w-full px-3 py-2 border rounded-lg focus:ring-1 focus:ring-gray-500 focus:outline-none transition-colors',
               sizeTypeStore.validationErrors.name
                 ? 'border-red-500 dark:border-red-500 bg-red-50 dark:bg-red-900/20 text-gray-900 dark:text-white'
                 : 'border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-gray-500'
-]" placeholder="Enter size type name">
+            ]" placeholder="Enter size type name">
             <p v-if="sizeTypeStore.validationErrors.name" class="text-xs text-red-600 dark:text-red-400 mt-1">
               {{ sizeTypeStore.validationErrors.name[0] }}
             </p>
@@ -278,12 +278,12 @@
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Sequence
             </label>
-           <input v-model="formData.sequence" type="number" min="1" @input="clearValidationError('sequence')" :class="[
+            <input v-model="formData.sequence" type="number" min="1" @input="clearValidationError('sequence')" :class="[
               'w-full px-3 py-2 border rounded-lg focus:ring-1 focus:ring-gray-500 focus:outline-none transition-colors',
               sizeTypeStore.validationErrors.sequence
                 ? 'border-red-500 dark:border-red-500 bg-red-50 dark:bg-red-900/20 text-gray-900 dark:text-white'
                 : 'border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-gray-500'
-]" placeholder="Enter display sequence">
+            ]" placeholder="Enter display sequence">
             <p v-if="sizeTypeStore.validationErrors.sequence" class="text-xs text-red-600 dark:text-red-400 mt-1">
               {{ sizeTypeStore.validationErrors.sequence[0] }}
             </p>
@@ -334,28 +334,28 @@
           <!-- Active Status - Radio Buttons -->
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-             Status <span class="text-red-500 dark:text-red-400">*</span>
+              Status <span class="text-red-500 dark:text-red-400">*</span>
             </label>
             <div class="flex items-center space-x-6">
               <label class="inline-flex items-center cursor-pointer">
-               <input v-model="formData.status" type="radio" :value="true" @change="clearValidationError('status')"
+                <input v-model="formData.status" type="radio" :value="true" @change="clearValidationError('status')"
                   class="h-4 w-4 text-green-600 focus:ring-green-600 border-green-300 dark:border-green-600 dark:bg-green-700">
                 <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Active</span>
               </label>
               <label class="inline-flex items-center cursor-pointer">
-               <input v-model="formData.status" type="radio" :value="false" @change="clearValidationError('status')"
-                  class="h-4 w-4 text-red-600 focus:ring-red-600 border-red-300 dark:border-red-600 dark:bg-red-700">
+                <input v-model="formData.status" type="radio" :value="false" @change="clearValidationError('status')"
+                  class="h-4 w-4 text-red-600 focus:ring-red-600 border-red-300 dark:border-red-600 dark:bg-red-700 accent-red-600">
                 <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Inactive</span>
               </label>
             </div>
-           <p v-if="sizeTypeStore.validationErrors.status" class="text-xs text-red-600 dark:text-red-400 mt-1">
+            <p v-if="sizeTypeStore.validationErrors.status" class="text-xs text-red-600 dark:text-red-400 mt-1">
               {{ sizeTypeStore.validationErrors.status[0] }}
             </p>
           </div>
         </div>
 
         <!-- Global Form Errors -->
-       <div v-if="Object.keys(sizeTypeStore.validationErrors).length > 0"
+        <div v-if="Object.keys(sizeTypeStore.validationErrors).length > 0"
           class="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
           <p class="text-sm text-red-600 dark:text-red-400 font-medium mb-1">
             Please fix the following errors:
@@ -374,7 +374,7 @@
             Cancel
           </button>
           <button type="submit" :disabled="sizeTypeStore.loading" :class="[
-  'px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors focus:outline-none focus:ring-1 focus:ring-gray-500',
+            'px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors focus:outline-none focus:ring-1 focus:ring-gray-500',
             sizeTypeStore.loading ?
               'bg-gray-400 cursor-not-allowed' :
               'bg-gray-600 hover:bg-gray-700'
@@ -392,7 +392,7 @@
     </BaseModal>
 
     <!-- View Modal -->
-   <BaseModal v-if="viewingSizeType" :show="showViewModal" maxWidth="xl" title="Size Type Details"
+    <BaseModal v-if="viewingSizeType" :show="showViewModal" maxWidth="xl" title="Size Type Details"
       @close="closeViewModal">
       <div class="px-6 py-3">
         <div class="text-center mb-6">
@@ -420,12 +420,12 @@
                 <div class="flex items-center">
                   <div :class="[
                     'w-4 h-4 rounded-full border mr-2',
-  viewingSizeType.status === 1 || viewingSizeType.status === true
+                    viewingSizeType.status === 1 || viewingSizeType.status === true
                       ? 'bg-green-500 border-green-500'
                       : 'bg-gray-300 dark:bg-gray-600 border-gray-300 dark:border-gray-600'
                   ]"></div>
                   <span class="text-sm text-gray-700 dark:text-gray-300">
-                   {{ viewingSizeType.status === 1 || viewingSizeType.status === true ? 'Active' : 'Inactive' }}
+                    {{ viewingSizeType.status === 1 || viewingSizeType.status === true ? 'Active' : 'Inactive' }}
                   </span>
                 </div>
               </div>
@@ -468,7 +468,7 @@
           class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-1 focus:ring-gray-500">
           Close
         </button>
-       <button @click="edit(viewingSizeType)"
+        <button @click="edit(viewingSizeType)"
           class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-1 focus:ring-gray-500">
           Edit Size Type
         </button>
@@ -492,13 +492,13 @@
           </p>
         </div>
 
-      <div class="flex justify-center space-x-3">
+        <div class="flex justify-center space-x-3">
           <button @click="closeDeleteModal"
             class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-1 focus:ring-gray-500">
             Cancel
           </button>
           <button @click="handleDelete" :disabled="sizeTypeStore.loading" :class="[
-  'px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors focus:outline-none focus:ring-1 focus:ring-gray-500',
+            'px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors focus:outline-none focus:ring-1 focus:ring-gray-500',
             sizeTypeStore.loading ?
               'bg-red-400 cursor-not-allowed' :
               'bg-red-600 hover:bg-red-700'

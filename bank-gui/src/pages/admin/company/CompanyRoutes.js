@@ -1,24 +1,23 @@
-import CompanyManagement from './CompanyManagement.vue';
-import CompanyTrash from '@/components/CompanyTrash.vue';
+import CompanyManagement from "./CompanyManagement.vue";
+import CompanyTrash from "@/components/pages/company/CompanyTrash.vue";
 
 export default [
   {
-    path: '/company',
+    path: "/company",
     component: CompanyManagement,
     meta: {
       requiresAuth: true,
-      title: 'Company',
-      breadcrumb: 'Company'
-    }
+      title: "Company",
+      breadcrumb: "Company",
+    },
   },
   {
-    path: '/company/trash',
+    path: "/company/trash",
     component: CompanyTrash,
     meta: {
       requiresAuth: true,
-      title: 'Company Trash',
-      breadcrumb: 'Company Trash'
-    }
-  }
-]
-
+      title: "Company Trash",
+      breadcrumb: "Company Trash",
+    },
+  },
+];

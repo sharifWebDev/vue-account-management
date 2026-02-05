@@ -1,24 +1,23 @@
-import BankManagement from './BankManagement.vue';
-import BankTrash from '@/components/BankTrash.vue';
+import BankManagement from "./BankManagement.vue";
+import BankTrash from "@/components/pages/banks/BankTrash.vue";
 
 export default [
   {
-    path: '/bank',
+    path: "/bank",
     component: BankManagement,
     meta: {
       requiresAuth: true,
-      title: 'Bank',
-      breadcrumb: 'Bank'
-    }
+      title: "Bank",
+      breadcrumb: "Bank",
+    },
   },
   {
-    path: '/bank/trash',
+    path: "/bank/trash",
     component: BankTrash,
     meta: {
       requiresAuth: true,
-      title: 'Bank Trash',
-      breadcrumb: 'Bank Trash'
-    }
-  }
-]
-
+      title: "Bank Trash",
+      breadcrumb: "Bank Trash",
+    },
+  },
+];

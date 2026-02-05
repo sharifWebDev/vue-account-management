@@ -5,5 +5,5 @@
 </template>
 
 <script setup>
-import TransactionManagement from '@/components/pages/transactions/Transaction.vue';
+import TransactionManagement from '@/components/TransactionType.vue';
 </script>
