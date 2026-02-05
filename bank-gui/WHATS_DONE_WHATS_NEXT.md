@@ -293,4 +293,6 @@ All components include:
 - All stores follow same pattern - see baseStore.js
 - Sidebar menu already configured - see Sidebar.vue
 
+
+
 **Everything is ready to go - just need to copy templates and adapt field names!**
